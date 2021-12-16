@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="241mm"
+   viewBox="0 0 210 241"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="system-diagram.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="205.54564"
+     inkscape:cy="447.16668"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1918"
+     inkscape:window-height="1064"
+     inkscape:window-x="0"
+     inkscape:window-y="14"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+       id="rect10"
+       width="93.791573"
+       height="50.538868"
+       x="27.117527"
+       y="51.582481" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="59.693039"
+       y="63.49889"
+       id="text837"><tspan
+         sodipodi:role="line"
+         id="tspan835"
+         x="59.693039"
+         y="63.49889"
+         style="stroke-width:0.264583">chain</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+       id="rect839"
+       width="76.739548"
+       height="21.044825"
+       x="36.700748"
+       y="70.031113" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="55.43367"
+       y="84.21505"
+       id="text843"><tspan
+         sodipodi:role="line"
+         id="tspan841"
+         x="55.43367"
+         y="84.21505"
+         style="stroke-width:0.264583">verifier</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+       id="rect845"
+       width="57.99749"
+       height="21.916101"
+       x="45.770218"
+       y="16.343117" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="58.254593"
+       y="30.265543"
+       id="text849"><tspan
+         sodipodi:role="line"
+         id="tspan847"
+         x="58.254593"
+         y="30.265543"
+         style="stroke-width:0.264583">wallet</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.329242;stroke-opacity:1"
+       id="rect851"
+       width="73.498032"
+       height="41.252121"
+       x="40.151272"
+       y="119.47234" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="56.866463"
+       y="132.38292"
+       id="text855"><tspan
+         sodipodi:role="line"
+         id="tspan853"
+         x="56.866463"
+         y="132.38292"
+         style="stroke-width:0.264583">prover</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+       id="rect857"
+       width="59.868374"
+       height="16.570711"
+       x="47.448509"
+       y="137.30237" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="55.208893"
+       y="148.57098"
+       id="text861"><tspan
+         sodipodi:role="line"
+         id="tspan859"
+         x="55.208893"
+         y="148.57098"
+         style="stroke-width:0.264583">validator</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+       id="rect863"
+       width="46.504898"
+       height="68.420998"
+       x="137.13052"
+       y="72.830872" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="146.13829"
+       y="90.779305"
+       id="text867"><tspan
+         sodipodi:role="line"
+         id="tspan865"
+         x="146.13829"
+         y="90.779305"
+         style="stroke-width:0.264583">dapp</tspan><tspan
+         sodipodi:role="line"
+         x="146.13829"
+         y="104.00843"
+         style="stroke-width:0.264583"
+         id="tspan869">off-</tspan><tspan
+         sodipodi:role="line"
+         x="146.13829"
+         y="117.23756"
+         style="stroke-width:0.264583"
+         id="tspan871">chain</tspan><tspan
+         sodipodi:role="line"
+         x="146.13829"
+         y="130.46667"
+         style="stroke-width:0.264583"
+         id="tspan873">code</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+       id="rect875"
+       width="80.210808"
+       height="29.101873"
+       x="36.283665"
+       y="183.55669" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="49.094139"
+       y="201.00626"
+       id="text879"><tspan
+         sodipodi:role="line"
+         id="tspan877"
+         x="49.094139"
+         y="201.00626"
+         style="stroke-width:0.264583">database</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 74.465089,38.434651 V 51.263585"
+       id="path881" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 73.930549,102.31207 v 16.0362"
+       id="path883" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 72.663581,161.23992 v 22.71791"
+       id="path885" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 136.48367,126.81975 -22.58998,13.40943"
+       id="path887" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 104.23745,24.619077 55.85931,48.375782"
+       id="path889" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 121.60995,84.75472 14.16529,11.759859"
+       id="path891" />
+  </g>
+</svg>
