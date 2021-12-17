@@ -101,7 +101,7 @@ The next step is for the dapp to generate an unsigned transaction. The dapp send
 
 Adding an on-chain input to a rollup is essentially a two step process. First, the user sends the input to the rollup contract address. Second, the input gets picked up by an input transaction. The input transaction is an on-chain transaction which takes as input the rollup state UTXO and the inputs at the contract address which are to be added. It produces as output the new rollup state UTXO. The input transaction is signed by the prover. The rollup state UTXO contains the monetary values added to the rollup (in aggregate form, without tracking who owns what). It also contains whatever state data must be stored on-chain for the rollup contract.
 
-Here is a speculative, non-binding description of what state data must be stored in the rollup UTXO. First, a nonce which gets incremented on every output transaction (described in the next section). Second, a hash of all of the on-rollup UTXOs. The mentioned hash may be a recursive hash, i.e. a hash of UTXOs and a previous hash. The purpose of the nonce is to help ensure that on-rollup UTXOs are not used more than once. The purpose of the state hash is to serve as an input to the proof checking algorithm.
+Here is a speculative, non-binding description of some state data which must be stored in the rollup UTXO. First, a nonce which gets incremented on every output transaction (described in the next section). Second, a hash of all of the on-rollup UTXOs. The mentioned hash may be a recursive hash, i.e. a hash of UTXOs and a previous hash. The purpose of the nonce is to help ensure that on-rollup UTXOs are not used more than once. The purpose of the state hash is to serve as an input to the proof checking algorithm.
 
 
 \subsection{Process of removing an output from a rollup}
@@ -110,6 +110,14 @@ Removing an on-rollup output from the rollup and putting it on the chain is esse
 
 
 \section{Money trap avoidance}
+
+One of the risks of ZK rollup solutions is denial of service. The prover is unable to post any outputs to the chain which are not lawful, but the prover is able to refuse service. Given that the prover is the only entity able to sign input and output transactions, if the prover stops operations, then the funds stored in the rollup contract would be lost. Another variant of this denial of service risk is that the prover might refuse service to certain market participants and not others, which could also cause those participants to lose money they put into the rollup contract. How can we mitigate these risks?
+
+Ardana Rollups uses a model of exclusive access of one prover to a given rollup contract UTXO. The reason for this is to avoid resource contention where multiple provers contend for one rollup UTXO, which could result in performance issues and also complex situations where inputs are double spent, once by one prover and once by another prover. The latter situation would not result in actual double-spends on-chain, but it would preclude the possibility of both provers merging the outputs of their on-rollup transactions into the chain.
+
+This exclusive access model (in contract to a permissionless model for using rollup UTXOs) leads to the mentioned money trap risk that occurs when a prover stops operating. In order to mitigate this risk, we can put an expiration time on a prover's exclusive access to the rollup UTXO. This means that the prover is expected to generate input and output transactions at some specified minimum frequency, and if this obligation is unmet, then the prover loses their exclusive access to the rollup UTXO and another prover is able to claim that exclusive access and retain it as long as they keep up with the obligation to post input and output transactions.
+
+This idea of an expiring exclusive access to a rollup UTXO addresses the money trap risk which occurs when a prover stops operating. However, it does not address the money trap risk which occurs when a prover refuses service only to certain market participants. The latter risk will need to be addressed in a different way. The non-binding recommendation for solving this problem is to build into the rollup protocol a principle that input and output transactions must process inputs and outputs in a first-come first-served manner, meaning that the first inputs to be sent to the contract address are the first to be added to the rollup, and the first removal transactions posted to the rollup are the first to be processed in an output transaction.
 
 
 \clearpage
