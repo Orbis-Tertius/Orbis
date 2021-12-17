@@ -61,6 +61,12 @@ The verifier is an on-chain smart contract. Its essential purpose is to settle t
 	\label{fig:system-diagram}
 \end{figure}
 
+Ardana Rollups provide an off-chain context in which smart contract validator code can run. Instead of being run to create transactions on the chain, in this context validator code is run to create transactions on the rollup and proofs that those transactions belong on the rollup.
+
+It is important to keep two terms distinct here: \emph{verifier}\/ and \emph{validator}. ``Validator'' refers to a function which takes as input a transaction and produces as output a boolean value indicating whether or not the transaction satisfies the rules of a smart contract. ``Verifier'' refers to the smart contract validator which validates transactions over the rollup smart contract. The verifier is a validator, but other validators are not verifiers. In order to avoid confusion, let the term ``validator'' refer to the validator for some smart contract running on the rollup, as opposed to referring to the verifier (which runs on the blockchain).
+
+Using Ardana Rollups complicates the process of developing a dapp (decentralized application) somewhat. The dapp must be aware of and control the movement of information from the chain to the rollup and back again. It must publish and subscribe to data not only on the chain but also on the rollup. The dapp interacts with the rollup by calling the prover API. The next section covers the processes involved in more detail.
+
 
 \begin{thebibliography}{3}
 
