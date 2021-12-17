@@ -99,7 +99,17 @@ The next step is for the dapp to generate an unsigned transaction. The dapp send
 
 \subsection{Process of adding an input to a rollup}
 
+Adding an on-chain input to a rollup is essentially a two step process. First, the user sends the input to the rollup contract address. Second, the input gets picked up by an input transaction. The input transaction is an on-chain transaction which takes as input the rollup state UTXO and the inputs at the contract address which are to be added. It produces as output the new rollup state UTXO. The input transaction is signed by the prover. The rollup state UTXO contains the monetary values added to the rollup (in aggregate form, without tracking who owns what). It also contains whatever state data must be stored on-chain for the rollup contract.
+
+Here is a speculative, non-binding description of what state data must be stored in the rollup UTXO. First, a nonce which gets incremented on every output transaction (described in the next section). Second, a hash of all of the on-rollup UTXOs. The mentioned hash may be a recursive hash, i.e. a hash of UTXOs and a previous hash. The purpose of the nonce is to help ensure that on-rollup UTXOs are not used more than once. The purpose of the state hash is to serve as an input to the proof checking algorithm.
+
+
 \subsection{Process of removing an output from a rollup}
+
+Removing an on-rollup output from the rollup and putting it on the chain is essentially a two step process. First, the user posts a removal transaction to the rollup. Second, the prover posts a removal transaction to the chain and updates its internal state. A removal transaction describes a set of output UTXOs and a proof (checked by the verifier contract) which shows that those outputs are lawful.
+
+
+\section{Money trap avoidance}
 
 
 \clearpage
