@@ -68,6 +68,32 @@ It is important to keep two terms distinct here: \emph{verifier}\/ and \emph{val
 Using Ardana Rollups complicates the process of developing a dapp (decentralized application) somewhat. The dapp must be aware of and control the movement of information from the chain to the rollup and back again. It must publish and subscribe to data not only on the chain but also on the rollup. The dapp interacts with the rollup by calling the prover API. The next section covers the processes involved in more detail.
 
 
+\section{Processes}
+
+There are three main processes involved in a dapp using Ardana Rollups: moving inputs from the chain to the rollup, posting transactions on the rollup, and moving outputs from the rollup to the chain. These processes are pictured in Figures~\ref{fig:process-a}, \ref{fig:process-b}, and \ref{fig:process-c}.
+
+\begin{figure}
+	\includegraphics[angle=180,width=1.0\columnwidth]{process-diagram-a.pdf}
+	\caption{Process of posting a transaction to a rollup.}
+	\label{fig:process-a}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[angle=180,width=1.0\columnwidth]{process-diagram-b.pdf}
+	\caption{Process of adding an input to a rollup.}
+	\label{fig:process-b}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[angle=180,width=1.0\columnwidth]{process-diagram-c.pdf}
+	\caption{Process of removing an output from a rollup.}
+	\label{fig:process-c}
+\end{figure}
+
+
+\clearpage
+
+
 \begin{thebibliography}{3}
 
 
