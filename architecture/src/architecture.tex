@@ -90,6 +90,17 @@ There are three main processes involved in a dapp using Ardana Rollups: moving i
 	\label{fig:process-c}
 \end{figure}
 
+\subsection{Process of posting a transaction to a rollup}
+
+The first step of posting a transaction to a rollup is for the dapp code to call the prover API to lock the on-rollup input UTXOs. The purpose of this is to avoid resource contention problems which would prevent the transaction from going through. These locks should be temporary and expire automatically after a short time sufficient to complete the transaction. To avoid denial of service attacks based on this locking mechanism, the user requesting the transaction should be required to post collateral which will be lost if the locks expire without the inputs being used, or some other means should be used to prevent denial of service attacks based on this mechanism. The collateral can, for example, be one of the inputs being locked. Every transaction will have some monetary input, at least what is required to cover the transaction fee charged by the prover in order to cover the costs of proof generation. In response to the locking request, the prover provides some sort of key which the dapp may use to consume the on-rollup inputs. 
+
+The next step is for the dapp to generate an unsigned transaction. The dapp sends the unsigned transaction to the user's wallet to be signed. The wallet signs the transaction with the user's approval. The dapp receives the signed transaction from the wallet and posts the transaction to the rollup by calling the prover API. The prover runs any validator scripts required for the transaction and generates a proof. The transaction, its outputs, and the proof are added to the rollup and the on-rollup inputs are marked as consumed. The dapp observes the rollup state changes via the prover API and makes them visible to the user.
+
+
+\subsection{Process of adding an input to a rollup}
+
+\subsection{Process of removing an output from a rollup}
+
 
 \clearpage
 
