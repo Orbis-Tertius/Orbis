@@ -22,12 +22,42 @@ ZK rollups are an increasingly popular choice of layer 2 solution on Ethereum, w
 
 This is the system architecture document for Ardana Rollups. This defines the key components of Ardana Rollups and their interactions with each other and the outside world, as well as the rationale for those design decisions. This is different from a whitepaper or a technical spec in that it does not attempt to provide enough information to implement Ardana Rollups. Instead, you can think of it as a sketch. Technical specs will fill in the picture in much greater detail, sufficient to guide implementation, and a technical whitepaper will describe Ardana Rollups in a form more suitable for general consumption.
 
+\section{Background}
 
-\begin{thebibliography}{1}
+This section covers background information necessary to understand the design of Ardana Rollups and ZK rollup solutions more generally.
+
+A blockchain uses a consensus algorithm executed by a decentralized network of nodes in order to process financial transactions and other information. Thanks to the consensus algorithm, parties can be assured that their money and other information assets stored on the blockchain will not be used in a manner they did not authorize, without a need to trust that any particular participant in the protocol is behaving honestly.
+
+Blockchains are an important innovation in financial technology which have the potential to liberate humanity from centralized systems of finance. However, this will only be possible to the extent that blockchain developers can obtain massive scalability, such that these systems could actually replace the centralized financial technology which most people use most of the time to settle financial transactions electronically today. For example, Visa reportedly processes over 150 million transactions per day on average, and is capable of processing more than 24,000 transactions per second. \cite{visa}
+
+Scalability of blockchain solutions is a widely recognized problem. There are a few angles of attack on this problem. One angle is to increase the transaction throughput of the blockchain itself. This is an important task but also a difficult one. Another angle is to multiply the number of blockchains in use, such as in the case of Kadena's Chainweb. \cite{chainweb} A third angle is to use so-called layer 2 solutions, whereby transactions are processed off-chain and then the results are later synced onto the chain. With layer 2 solutions, the blockchain can be used simply as a settlement layer, while application domain business logic lives off-chain and the amount of state and state changes stored on the chain can be greatly reduced.
+
+ZK rollups are an example of a layer 2 solution strategy. ZK rollups make use of zkSNARKs. zkSNARKs are a type of proof. A proof, for our purposes, is a piece of information which evidences the truth of some statement. In the context of formal logic, a proof is in other words a sound argument, which is a valid argument where the premises are true. A valid argument, speaking informally, is an argument which in virtue of its logical structure guarantees that the conclusion is true provided that the premises are true. This is \emph{not}\/ what we mean by a proof here. A proof in this context is a piece of information whose existence demonstrates that there is only a negligible probability that the statement to be proven is not true. In this sense of the word proof, for example, an ED25519 signature is a proof that a person who has the private signing key ran the signing algorithm on the piece of information that was signed.
+
+By definition, a zkSNARK is a zero knowledge succinct non-interactive argument of knowledge. In this definition, ``argument of knowledge'' means ``proof'' (in the sense of ``proof'' just stated). A zkSNARK has the characteristics of being zero knowledge (meaning it does not prove anything more than the statement to be proven), succinct (meaning the proof can be represented as a small number of bytes), and non-interactive (meaning the proof can be represented as a single message, as opposed to a multi-step interaction between the proving entity and proof-checking entity).
+
+For our purposes, the most relevant characteristics of zkSNARKs are the succinct and non-interactive properties. It may be the case that we could get by with just SNARKs, i.e., succinct non-interactive proofs which are not necessarily zero-knowledge. However, we are using zkSNARKs for the reason that the bulk of the research on SNARKs is on zkSNARKs, and we believe that the most mature SNARK solutions available are zkSNARK solutions.
+
+The reason that succinctness and non-interactivity are key properties here is that we need to store the proofs in transactions on the blockchain. Thus due to the nature of blockchain transactions, which are short single messages, the proofs must be succinct and non-interactive.
+
+ZK rollups are in essence a simple concept. In a pure blockchain protocol (without a layer 2 solution), we store all transactions, all smart contract code, and all smart contract state data on the blockchain. In a ZK rollup solution, we move some of this code and data off-chain, and instead we store on the chain proofs that this information exists. The zkSNARKs stored on chain prove that for some set of inputs and some set of outputs, there exists a set of transactions which were signed by the relevant parties and which followed the rules of the relevant smart contracts. Those transactions never need to be recorded on the chain; we need only record the inputs, the outputs, and the proof that those outputs lawfully (according to the laws of the blockchain protocol) resulted from the inputs.
+
+Due to the nature of zkSNARKs, this strategy allows for a potentially unlimited number of transactions to be performed with a constant $O(1)$ amount of on-chain information. Therefore this ZK rollup strategy allows for potentially very efficient usage of the limited information storage capacity of the blockchain. 
+
+Similarly, the computational complexity of verifying a zkSNARK proof is $O(1)$, and therefore, the ZK rollup strategy allows for a potentially unlimited amount of computation to be done off-chain to validate transactions which are all verified by a single proof, and the on-chain computation required to validate those transactions is limited to the relatively small and $O(1)$ amount of computation required to check the proof.
+
+
+\begin{thebibliography}{3}
 
 
 	\bibitem{ethworks-20}
 		Ethworks. \textit{Zero-Knowledge Blockchain Scalability}. Ethworks Reports, 2020. \url{https://ethworks.io/assets/download/zero-knowledge-blockchain-scaling-ethworks.pdf}
+
+	\bibitem{visa}
+		Visa. \textit{Power your retail business beyond the point of sale.} Accessed December 17, 2021. \url{https://usa.visa.com/run-your-business/small-business-tools/retail.html}
+
+	\bibitem{chainweb}
+		Will Martino, Monica Quaintance, and Stuart Popejoy. \textit{Chainweb: A Proof-of-Work Parallel-Chain Architecture for Massive Throughput.} DRAFT v15. \url{https://d31d887a-c1e0-47c2-aa51-c69f9f998b07.filesusr.com/ugd/86a16f_029c9991469e4565a7c334dd716345f4.pdf}
 
 
 \end{thebibliography}
