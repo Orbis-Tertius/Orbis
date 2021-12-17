@@ -44,7 +44,22 @@ ZK rollups are in essence a simple concept. In a pure blockchain protocol (witho
 
 Due to the nature of zkSNARKs, this strategy allows for a potentially unlimited number of transactions to be performed with a constant $O(1)$ amount of on-chain information. Therefore this ZK rollup strategy allows for potentially very efficient usage of the limited information storage capacity of the blockchain. 
 
-Similarly, the computational complexity of verifying a zkSNARK proof is $O(1)$, and therefore, the ZK rollup strategy allows for a potentially unlimited amount of computation to be done off-chain to validate transactions which are all verified by a single proof, and the on-chain computation required to validate those transactions is limited to the relatively small and $O(1)$ amount of computation required to check the proof.
+Similarly, the computational complexity of verifying a zkSNARK proof is $O(1)$, and therefore, the ZK rollup strategy allows for a potentially unlimited amount of computation to be done off-chain to validate transactions which are all verified by a single proof, and the on-chain computation required to validate those transactions is limited to the relatively small and $O(1)$ amount of computation required to check the proof. This makes for a potentially very efficient usage of the limited computational capacity of the blockchain.
+
+
+\section{System Components}
+
+Ardana Rollups has two main components: the prover and the verifier. See Figure~\ref{fig:system-diagram} for a picture of these components and their contact points with each other and the rest of the world.
+
+The prover is an off-chain web service, and its essential purpose is to construct zkSNARKs verifying the occurrence of transactions. The prover has an API similar to a blockchain node; it allows for posting transactions and inspecting state data. Unlike a blockchain node, which allows for posting transactions to the blockchain and inspecting the state of the blockchain, the prover allows for posting transactions to a rollup and inspecting the state of a rollup. Here ``rollup'' refers to a sequence of transactions and a collection of state data which will at some future time be used to create outputs on the blockchain. The rollup is stored in the persistent state mechanism of the prover (a database) rather than on the blockchain. Therefore, while the prover has an API similar to that of a blockchain node, it is something else entirely.
+
+The verifier is an on-chain smart contract. Its essential purpose is to settle transactions performed on rollup. The verifier contract accepts on-chain inputs, locking them up in the contract so they can be used on the rollup. Also, the verifier contract validates transactions created by the prover which contain outputs from the rollup and proofs that those outputs resulted from a series of valid transactions based on inputs provided to the verifier contract.
+
+\begin{figure}
+	\includegraphics[width=1.0\columnwidth]{system-diagram.pdf}
+	\caption{Key components of and related to Ardana Rollups.}
+	\label{fig:system-diagram}
+\end{figure}
 
 
 \begin{thebibliography}{3}
