@@ -117,6 +117,8 @@ This exclusive access model (in contract to a permissionless model for using rol
 
 This idea of an expiring exclusive access to a rollup UTXO addresses the money trap risk which occurs when a prover stops operating. However, it does not address the money trap risk which occurs when a prover refuses service only to certain market participants. The latter risk will need to be addressed in a different way. The non-binding recommendation for solving this problem is to build into the rollup protocol a principle that input and output transactions must process inputs and outputs in a first-come first-served manner, meaning that the first inputs to be sent to the contract address are the first to be added to the rollup, and the first removal transactions posted to the rollup are the first to be processed in an output transaction.
 
+The non-binding recommendation for implementing the first come, first served principle is to post transactions to a decentralized data structure such as a sidechain or a queue implemented as a CRDT on the Dat protocol. This is out of scope of an initial release. For an initial release, we do not require a solution to the money trap risk associated with selective denial of service by a prover.
+
 
 \section{Verifer contract state data}
 
@@ -147,6 +149,9 @@ Here is a speculative, non-binding description of some state data which must be 
 
 	\bibitem{chainweb}
 		Will Martino, Monica Quaintance, and Stuart Popejoy. \textit{Chainweb: A Proof-of-Work Parallel-Chain Architecture for Massive Throughput.} DRAFT v15. \url{https://d31d887a-c1e0-47c2-aa51-c69f9f998b07.filesusr.com/ugd/86a16f_029c9991469e4565a7c334dd716345f4.pdf}
+
+	\bibitem{dat}
+		Maxwell Ogden, Karissa McKelvey, Mathias Buus Madsen, Code for Science. \textit{Dat - Distributed Dataset Synchronization And Versioning.} May 2017 (last updated: Jan 2018). \url{https://github.com/datprotocol/whitepaper/blob/master/dat-paper.pdf}
 
 
 \end{thebibliography}
