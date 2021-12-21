@@ -1,0 +1,40 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{hyperref}
+
+\title{Ardana Rollups Off-Chain Transaction Pricing}
+\author{Ardana Labs}
+
+
+\begin{document}
+
+
+\maketitle
+
+
+A key bottleneck in Ardana rollups is the process of moving funds from the chain to the rollup and back again. To add funds to the rollup, a user sends the funds to the rollup contract address, where they will be picked up and incorporated into the rollup by an on-chain ``input'' transaction posted by the prover. To remove funds from the rollup, a user posts an on-rollup removal transaction, and then the prover creates an on-chain ``output'' transaction which processes several removal transactions, sending the funds to their owners' wallet adresses. These input and output transactions are expected to be a bottleneck because of the limited throughput of the chain. 
+
+We wish to ensure the availability of rollup services, to the greatest extent possible, and this includes the services of adding and removing funds. However, we are strictly limited in our ability to increase throughput for adding and removing funds. Therefore, in order to ensure the availability of these services, we will use a pricing mechanism for these services which balances supply and demand. If demand for the services exceeds the supply, then we will raise prices so that demand does not exceed supply. If supply for the services exceeds the demand by a lot, then we will lower prices so that supply does not exceed demand so much, unless the price cannot be lowered any further.
+
+The minimum cost of adding and removing funds is the network fees charged by the blockchain, plus the cost of creating the on-rollup removal transaction (in the case of removals). These costs are out of scope of the current proposal. These costs do not serve to balance supply and demand, but rather just to cover the costs of operating the network. The current proposal describes additional charges which are not to cover operation costs but rather to balance supply with demand. These additional charges can be zero, and there is no limit to how high they can be. We will refer to these additional charges as the ``availability surcharge.''
+
+The availability surcharge will be computed off-chain by the prover. The prover will periodically write the value of the availability surcharge (denominated in ADA) to the verifier contract state UTXO via a transaction which must be signed by the prover.
+
+The initial value of the availability surcharge will be zero. Changes to the availability surcharge will be based on the ratio of requests submitted to requests processed over the last $t$ seconds. Call this ratio $r_t$. The prover will continuously compute $r_{5m}$ and $r_{1h}$, i.e. $r$ for 5 minutes and 1 hour ($m = 60, h = 60 \times 60$). If $r_{5m} > 1.2$, then the prover will raise the availability surcharge. If $r_{5m} < 1$ and $r_{1h} < 0.75$, then the prover will lower the availability surcharge.
+
+When the prover raises the availability surcharge, it will do so by the following algorithm. If the availability surcharge is 0, then the prover will raise it to 1 ADA. If the availability surchage is $x > 0$, then the prover will raise it to $1.5x$.
+
+When the prover lowers the availiabilty surcharge, it will do so by the following algorithm. If the availability surcharge is less than 0.01 ADA, then the prover will lower it to 0. Otherwise, if the availability surcharge is $x$, then the prover will lower it to $0.75x$.
+
+The prover will not change the availability surcharge more than once every five minutes.
+
+This algorithm is designed to respond quickly to increases in demand, and respond more slowly to decreases in demand. This proposal assumes that surges in demand may happen quickly but are likely to persist for a while after they happen. It also assumes that it is better to overcharge on the availability surcharge than to have demand exceeding supply for a sustained period (which may lead to significant delays in processing input and output transactions).
+
+There are separate availability surcharges for adding and removing funds. Supply and demand for these two transaction types are assumed to be different. The availability surcharge for each of the two off-chain transaction types (addition and removal) is computed by the same algorithm, but these two surcharges float independently of each other.
+
+
+\end{document}
