@@ -6,7 +6,7 @@
 \usepackage{lmodern}
 \usepackage{hyperref}
 
-\title{Ardana Rollups Off-Chain Transaction Pricing}
+\title{Ardana Rollups On-Chain Transaction Pricing}
 \author{Ardana Labs}
 
 
@@ -34,7 +34,7 @@ The prover will not change the availability surcharge more than once every five 
 
 This algorithm is designed to respond quickly to increases in demand, and respond more slowly to decreases in demand. This proposal assumes that surges in demand may happen quickly but are likely to persist for a while after they happen. It also assumes that it is better to overcharge on the availability surcharge than to have demand exceeding supply for a sustained period (which may lead to significant delays in processing input and output transactions).
 
-There are separate availability surcharges for adding and removing funds. Supply and demand for these two transaction types are assumed to be different. The availability surcharge for each of the two off-chain transaction types (addition and removal) is computed by the same algorithm, but these two surcharges float independently of each other.
+There are separate availability surcharges for adding and removing funds. Supply and demand for these two transaction types are assumed to be different. The availability surcharge for each of the two on-chain transaction types (addition and removal) is computed by the same algorithm, but these two surcharges float independently of each other.
 
 
 \end{document}

@@ -5,14 +5,14 @@ with pkgs;
 let deps = [ (texlive.combine { inherit (texlive) scheme-basic amsmath graphics hyperref; }) ];
 in
   stdenv.mkDerivation {
-    name = "ardana-rollups-off-chain-pricing";
+    name = "ardana-rollups-on-chain-pricing";
     src = ./src;
     buildInputs = deps;
     buildPhase = ''
       mkdir -p $out
-      HOME=./. pdflatex off-chain-pricing.tex
-      HOME=./. pdflatex off-chain-pricing.tex
-      cp off-chain-pricing.pdf "$out/Ardana Rollups Off-Chain Tx Pricing.pdf"
+      HOME=./. pdflatex on-chain-pricing.tex
+      HOME=./. pdflatex on-chain-pricing.tex
+      cp on-chain-pricing.pdf "$out/Ardana Rollups On-Chain Tx Pricing.pdf"
     '';
     installPhase = ''
       echo done
