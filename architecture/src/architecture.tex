@@ -46,6 +46,20 @@ Due to the nature of zkSNARKs, this strategy allows for a potentially unlimited 
 
 Similarly, the computational complexity of verifying a zkSNARK proof is $O(1)$, and therefore, the ZK rollup strategy allows for a potentially unlimited amount of computation to be done off-chain to validate transactions which are all verified by a single proof, and the on-chain computation required to validate those transactions is limited to the relatively small and $O(1)$ amount of computation required to check the proof. This makes for a potentially very efficient usage of the limited computational capacity of the blockchain.
 
+Blockchains are one type of decentralized data store, but there are also other types of decentralized data stores which are not blockchains. A blockchain is a distributed ledger with a consensus algorithm. The two main ingredients in that concept are a decentralized data store for a sequence of transactions (a distributed ledger) and a means by which people can agree on how to update it (a consensus algorithm).
+
+A blockchain is a very general-purpose piece of equipment which solves a hard problem. A hard part of this problem is how do we agree on how to extend the ledger when parties may have submitted conflicting (individually satisfiable but jointly unsatisfiable) requests? The current state of the tech allows for solutions to this problem which are reliable but limited in terms of throughput.
+
+There are other ways of implementing a decentralized data store (other than a blockchain) which may provide greater performance by not solving the entirety of the problem which a blockchain solves. An example is a content-addressed distributed filesystem, e.g. \cite{dat} or \cite{ipfs}. The concept of a content-addressed filesystem does not require the same type of sophisticated consensus algorithm which a blockchain requires. If the only operations which mutate the data store are additions of new data, and that data is content-addressed and thus there is no possibility of conflict between two additions of data, then the data store can simply accept all requests to add data without using a conflict resolution mechanism. This simplification of the problem to be solved may allow for a more performant implementation with higher throughput.
+
+A decentralized filesystem carries a performance penalty as compared to a traditional filesystem. In a traditional filesystem, all files are stored on one drive, with blocks of data organized into a tree structure to make it easy to find. In a decentralized filesystem, blocks of data are still organized in a tree structure, but this tree structure is stored across many drives connected to many different computers, and therefore searching the tree requires network communication betweeen peers.
+
+For storing a small amount of data, a decentralized filesystem is probably not the right kind of decentralized data store. If the amount of data to be stored is small, then all of the data can be held in RAM. There is still a cost premium to updating such a decentralized data store, as compared to a case where the data is stored on one computer, because of the need for network communication between peers to update the data store. However, for such a decentralized data structure there is no need to search through a large amount of data stored in tree structures on drives, and for this we can expect a performance benefit as compared to a decentralized filesystem.
+
+Let's imagine a decentralized data structure based on two assumptions: the amount of data to be stored is small, and the ways in which it can be updated by definition do not conflict with each other. For example, consider a decentralized data store which is designed to store a set with less than 1,000 elements. The only way to update it is to add an element to the set, and each element of the set is timestamped with the time at which it was added, and when the cardinality of the set reaches 1,000, the oldest element of the set is dropped in order to make room for an additional element. This is an example of a conflict-free replicated data type (CRDT). This type of decentralized data store seems particularly amenable to an efficient implementation with high throughput, due to the relative simplicity of negotiating updates to the data store and the fact that the entire data store can be held in RAM.
+
+We can extend this idea to the concept of an ordered set, where the elements are ordered by the timestamp. That is, again, a CRDT. A further variant on this idea is the concept of a decentralized queue, where there are two operations: adding to the end of the queue and removing from the start of the queue. This type of queue can be a CRDT, depending on how we define the removal operation. If the removal operation states ``remove this element from the queue if it is there and it is the start of the queue,'' then the removal operation is conflict-free.
+
 
 \section{System Components}
 
@@ -106,6 +120,30 @@ Adding an on-chain input to a rollup is essentially a two step process. First, t
 
 Removing an on-rollup output from the rollup and putting it on the chain is essentially a two step process. First, the user posts a removal transaction to the rollup. Second, the prover posts an output transaction to the chain and updates its internal state. An output transaction describes a set of output UTXOs and a proof (checked by the verifier contract) which shows that those outputs are lawful. One output transaction on-chain settles many removal transactions on-rollup.
 
+\subsection{Authorization for updating the rollup}
+
+The rollup contract will allow for two methods of authorizing a transaction with the rollup contract. These transactions should only be performed by authorized parties in order to prevent UTXO resource contention. The two methods of authorization are to sign the transaction with a signing key whose public key hash is stored in the rollup contract state, or to spend an authorization token (described in Section~\ref{sec:distribution-decentralization}.
+
+
+\section{Distribution and decentralization of the prover}
+\label{sec:distribution-decentralization}
+
+Due to the high computational complexity of generating zkSNARK proofs which verify a large number of transactions, it will be necessary to make the prover a distributed system. By making use of recursive zkSNARK proofs, we can split the proof generation task into pieces which can be farmed out to different computers. This architecture assumes that it is possible to split the task of validating a sequence of transactions $\vec{t}$ (and generating the corresponding proof) into two subtasks which can done in parallel if the sequence can be split into two sequences $\vec{u}$ and $\vec{r}$, where some interpolation of the elements of $\vec{u}$ and $\vec{r}$ is equal to $\vec{t}$, and no transaction in $\vec{u}$ takes as input an output of a transaction in $\vec{r}$, and no transaction in $\vec{r}$ takes as input an output of a transaction in $\vec{u}$. This is assumed to be normally possible given dapp designs which are intended to make this possible. Thus we assume that we can split a sequence $\vec{t}$ of transactions into as many subsequences as are required to farm out the tasks of proof generation to as many computers as needed to make for sufficient throughput.
+
+As per usual in designing a distributed system, the system should be designed to be fault tolerant, such that if one computer in the system fails, the system as a whole will continue to function as intended, without human intervention.
+
+Distributing the prover is also a first step towards full decentralization of the prover. Full decentralization of the prover means that there is no computer, individual, or organization which is a single point of failure or a trusted entity in the prover protocol. Full decentralization of the prover is not in scope of the initial release, but is an eventual goal and commitment of the project. We are designing for an initial release which is not fully decentralized, and a smooth upgrade path (transparent from an end user perspective) to a fully decentralized prover.
+
+In the distributed prover, one computer is at any given time designated as the leader of the system, responsible for coordinating all prover activities and for producing the final output transaction and posting it to the blockchain. In the centralized distributed prover, this leader is controlled and designated by Ardana (or more generally the organization which controls the signing key(s) for the rollup contract instance). In the decentralized prover, the leader is periodically determined by some leader election process to be designed later.
+
+In the centralized prover, the prover is authorized to update the rollup contract instance by signing the transactions with the signing key(s) whose public key hashes are stored in the contract instance state. In the decentralized prover, another mechanism is needed, and the recommended mechanism is authorization tokens.
+
+An authorization token is a token which allows its holder to perform an action. In this application, authorization tokens allow for the holder to update the rollup contract instance. The holder of an authorization token provides it as an input to a transaction to update the rollup contract instance, in lieu of signing the transaction. The transaction outputs the authorization token to some address. This authorization token output address is stored in the rollup contract instance state and can be set by a transaction signed using one of the authorized signing key(s).
+
+The mechanism to update the authorization token output address is intended to be part of the smooth upgrade path from a centralized prover to a decentralized prover. For the upgrade path to be transparent to end users, it must not involve any change to the rollup contract, since a change to the rollup contract would necessitate moving funds from one contract to the other, and this cannot be done in a secure way without manual intervention by end users. We could build into the contract a provision allowing the funds in the rollup contract to be sent to a different contract using the authorized signing key(s), but this would open a security vulnerability where the person(s) in control of the signing key(s) could make off with the funds in the rollup contract. In the envisioned smooth upgrade path, we use a signed transaction with the rollup contract to set the authorization token output address to a contract address which handles the leader election process, ensuring that an authorization token makes it to the next elected leader.
+
+In the decentralized version of the prover, there are additional security considerations to take into account. In the centralized version, we can assume that prover nodes (i.e., computers which take part in the distributed computing cluster constituting the prover) are not malicious. In the decentralized version, we cannot make this assumption, and thus we will need to do in depth security analysis to guard against acts of malicious prover nodes. To the greatest extent possible, we should guard against acts of malicious prover nodes by using zkSNARK proofs to ensure that such malicious acts did not occur. Where this does not work, we can also use an enforcement mechanism based on requiring prover node operators to post collateral which will be burned if the nodes act maliciously (and this depends on designing reliable mechanisms for detecting the occurrence of such malicious acts).
+
 
 \section{Money trap avoidance}
 
@@ -117,7 +155,9 @@ This exclusive access model (in contract to a permissionless model for using rol
 
 This idea of an expiring exclusive access to a rollup UTXO addresses the money trap risk which occurs when a prover stops operating. However, it does not address the money trap risk which occurs when a prover refuses service only to certain market participants. The latter risk will need to be addressed in a different way. The non-binding recommendation for solving this problem is to build into the rollup protocol a principle that input and output transactions must process inputs and outputs in a first-come first-served manner, meaning that the first inputs to be sent to the contract address are the first to be added to the rollup, and the first removal transactions posted to the rollup are the first to be processed in an output transaction.
 
-The non-binding recommendation for implementing the first come, first served principle is to post transactions to a decentralized data structure such as a sidechain or a queue implemented as a CRDT on the Dat protocol. This is out of scope of an initial release. For an initial release, we do not require a solution to the money trap risk associated with selective denial of service by a prover.
+The non-binding recommendation for implementing the first come, first served principle is to post transactions to a decentralized data structure such as a queue implemented as a decentralized conflict-free replicated data type (CRDT). Then we would enforce that the first come, first served principle is not violated by checking that leaders do not violate it and burning their collateral if they do, as part of the leader election protocol. It seems that it would be possible to check that this principle is followed as part of the zkSNARK proofs posted to the rollup verifier contract, but that would require us either to include enforcement of that principle as part of the initial verifier contract release, or to update the verifier contract post launch, which we want to avoid in order to allow for a smooth decentralization upgrade path transparent to end users.
+
+Enforcing the first come, first served principle is out of scope of an initial release. For an initial release, we do not require a solution to the money trap risk associated with selective denial of service by a prover.
 
 
 \section{Verifer contract state data}
@@ -127,7 +167,8 @@ Here is a speculative, non-binding description of some state data which must be 
 \begin{enumerate}
 	\item A nonce which gets incremented on every output transaction. The purpose of the nonce is to help ensure that on-rollup UTXOs are not used more than once. 
 	\item A hash of all of the on-rollup UTXOs. The mentioned hash may be a recursive hash, i.e. a hash of UTXOs and a previous hash. The purpose of the state hash is to serve as an input to the proof checking algorithm.
-	\item The public key hash of the prover.
+	\item The public key hashes of the authorized signing key(s).
+	\item The authorization token output address.
 	\item The most recent time at which the prover posted an input transaction.
 	\item The most recent time at which the prover posted an output transaction.
 \end{enumerate}
@@ -152,6 +193,9 @@ Here is a speculative, non-binding description of some state data which must be 
 
 	\bibitem{dat}
 		Maxwell Ogden, Karissa McKelvey, Mathias Buus Madsen, Code for Science. \textit{Dat - Distributed Dataset Synchronization And Versioning.} May 2017 (last updated: Jan 2018). \url{https://github.com/datprotocol/whitepaper/blob/master/dat-paper.pdf}
+
+	\bibitem{ipfs}
+		Juan Benet. \textit{IPFS - Content Addressed, Versioned, P2P File System.} Accessed Dec 22, 2021. \url{https://github.com/ipfs/ipfs/blob/master/papers/ipfs-cap2pfs/ipfs-p2p-file-system.pdf}
 
 
 \end{thebibliography}
