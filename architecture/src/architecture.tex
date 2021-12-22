@@ -160,6 +160,16 @@ The non-binding recommendation for implementing the first come, first served pri
 Enforcing the first come, first served principle is out of scope of an initial release. For an initial release, we do not require a solution to the money trap risk associated with selective denial of service by a prover.
 
 
+\section{Fees}
+
+The fee structures for on-rollup and on-chain rollup transactions need to cover the costs of operating the system and also balance supply and demand to ensure availability of services. Defining the fee structures is out of scope of this document. For on-rollup transactions, it should be sufficient to charge fees which cover the operation costs of the rollup, since we should be able to scale to meet all demand for the on-rollup services. For on-chain rollup transactions, there is an upper limit to the throughput we can achieve pending further advances in the blockchain technology. Therefore, for on-chain rollup transactions, we will need to design a fee structure which includes ``availability surchages'' which serve to balance supply and demand in order to ensure availability of the services. The availability surcharges will be computed off-chain and charged by the rollup contract. Periodically, those fees will be collected by an authorized transaction with the rollup contract which sends the fees to a specified address (which can also be updated by another authorized transaction with the rollup contract).
+
+
+\section{Database}
+
+This architecture does not specify the nature of the database used to store the current rollup state and on-rollup transaction history. For the sake of transparency and fault tolerance, it may make sense to use a decentralized data store. For the sake of performance, it may make sense to use a traditional database such as PostgreSQL. It may make sense to use more than one database in order to address different considerations. It may make sense to store currently needed data in one database and archival data in another database.
+
+
 \section{Verifer contract state data}
 
 Here is a speculative, non-binding description of some state data which must be stored in the rollup UTXO.
@@ -171,6 +181,8 @@ Here is a speculative, non-binding description of some state data which must be 
 	\item The authorization token output address.
 	\item The most recent time at which the prover posted an input transaction.
 	\item The most recent time at which the prover posted an output transaction.
+	\item The amount of collected availability surcharges currently stored in the rollup contract.
+	\item The address to send collected availability surcharges to.
 \end{enumerate}
 
 
