@@ -11,6 +11,7 @@ library
   exposed-modules:
     Halo2.Prelude
     Halo2.Types
+    Halo2.Types.CircuitConfig
     Halo2.Types.Coefficient
     Halo2.Types.ColumnType
     Halo2.Types.ColumnIndex
@@ -20,8 +21,10 @@ library
     Halo2.Types.FieldElement
     Halo2.Types.FiniteField
     Halo2.Types.LookupArgument
+    Halo2.Types.LookupArguments
     Halo2.Types.Monomial
     Halo2.Types.Polynomial
+    Halo2.Types.PolynomialConstraints
     Halo2.Types.PolynomialDegreeBound
     Halo2.Types.PolynomialVariable
     Halo2.Types.PowerProduct
