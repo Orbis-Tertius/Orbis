@@ -11,6 +11,7 @@ library
   exposed-modules:
     Halo2.Prelude
     Halo2.Types
+    Halo2.Types.ColumnType
     Halo2.Types.FiniteField
 
   build-depends:
