@@ -11,4 +11,4 @@ import Halo2.Prelude
 
 
 newtype ColumnIndex = ColumnIndex { getColumnIndex :: Int }
-  deriving (Eq, Ord, Num, Enum, Show, Generic)
+  deriving (Eq, Ord, Num, Enum, Real, Integral, Show, Generic)

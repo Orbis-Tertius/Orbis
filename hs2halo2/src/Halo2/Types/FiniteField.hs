@@ -10,4 +10,4 @@ import Halo2.Prelude
 
 
 newtype FiniteField = FiniteField { degree :: Int }
-  deriving (Num, Eq, Ord, Show, Generic)
+  deriving (Num, Enum, Real, Integral, Eq, Ord, Show, Generic)
