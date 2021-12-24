@@ -15,8 +15,10 @@ library
     Halo2.Types.ColumnIndex
     Halo2.Types.ColumnTypes
     Halo2.Types.EqualityConstrainableColumns
+    Halo2.Types.FieldElement
     Halo2.Types.FiniteField
     Halo2.Types.PolynomialDegreeBound
+    Halo2.Types.PolynomialVariable
 
   build-depends:
     base >= 4.9 && < 5,
