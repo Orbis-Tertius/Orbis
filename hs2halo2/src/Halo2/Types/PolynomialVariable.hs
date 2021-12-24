@@ -7,7 +7,12 @@ module Halo2.Types.PolynomialVariable ( PolynomialVariable (PolynomialVariable) 
 
 
 import Halo2.Prelude
+import Halo2.Types.ColumnIndex
+import Halo2.Types.RowIndex
 
 
-newtype PolynomialVariable = PolynomialVariable { index :: Int }
-  deriving (Num, Enum, Real, Integral, Eq, Ord, Show, Generic)
+data PolynomialVariable =
+  PolynomialVariable
+  { colIndex :: ColumnIndex
+  , rowIndex :: RowIndex }
+  deriving (Eq, Ord, Show, Generic)
