@@ -9,7 +9,9 @@ maintainer:    morgan.thomas@platonic.systems
 
 library
   exposed-modules:
+    Halo2.Prelude
     Halo2.Types
+    Halo2.Types.FiniteField
 
   build-depends:
     base >= 4.9 && < 5,

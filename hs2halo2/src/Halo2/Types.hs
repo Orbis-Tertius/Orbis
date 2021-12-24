@@ -1,4 +1,4 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
 
-module Halo2.Types where
+module Halo2.Types () where
