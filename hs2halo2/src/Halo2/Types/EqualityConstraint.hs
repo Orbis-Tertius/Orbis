@@ -12,3 +12,4 @@ import Halo2.Types.PolynomialVariable
 
 newtype EqualityConstraint = EqualityConstraint
   { getEqualityConstraint :: Set PolynomialVariable }
+  deriving (Eq, Ord, Generic, Show)

@@ -11,6 +11,7 @@ library
   exposed-modules:
     Halo2.Prelude
     Halo2.Types
+    Halo2.Types.Circuit
     Halo2.Types.CircuitConfig
     Halo2.Types.Coefficient
     Halo2.Types.ColumnType
@@ -18,6 +19,7 @@ library
     Halo2.Types.ColumnTypes
     Halo2.Types.EqualityConstrainableColumns
     Halo2.Types.EqualityConstraint
+    Halo2.Types.EqualityConstraints
     Halo2.Types.Exponent
     Halo2.Types.FieldElement
     Halo2.Types.FiniteField
