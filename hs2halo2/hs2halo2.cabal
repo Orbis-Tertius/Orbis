@@ -13,6 +13,7 @@ library
     Halo2.Types
     Halo2.Types.ColumnType
     Halo2.Types.FiniteField
+    Halo2.Types.ColumnTypes
 
   build-depends:
     base >= 4.9 && < 5,
