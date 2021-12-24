@@ -28,6 +28,7 @@ library
     Halo2.Types.PolynomialDegreeBound
     Halo2.Types.PolynomialVariable
     Halo2.Types.PowerProduct
+    Halo2.Types.RowCount
 
   build-depends:
     base >= 4.9 && < 5,
