@@ -11,14 +11,19 @@ library
   exposed-modules:
     Halo2.Prelude
     Halo2.Types
+    Halo2.Types.Coefficient
     Halo2.Types.ColumnType
     Halo2.Types.ColumnIndex
     Halo2.Types.ColumnTypes
     Halo2.Types.EqualityConstrainableColumns
+    Halo2.Types.Exponent
     Halo2.Types.FieldElement
     Halo2.Types.FiniteField
+    Halo2.Types.Monomial
+    Halo2.Types.Polynomial
     Halo2.Types.PolynomialDegreeBound
     Halo2.Types.PolynomialVariable
+    Halo2.Types.PowerProduct
 
   build-depends:
     base >= 4.9 && < 5,
