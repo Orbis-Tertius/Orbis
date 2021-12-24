@@ -12,9 +12,11 @@ library
     Halo2.Prelude
     Halo2.Types
     Halo2.Types.ColumnType
-    Halo2.Types.FiniteField
     Halo2.Types.ColumnIndex
     Halo2.Types.ColumnTypes
+    Halo2.Types.EqualityConstrainableColumns
+    Halo2.Types.FiniteField
+    Halo2.Types.PolynomialDegreeBound
 
   build-depends:
     base >= 4.9 && < 5,

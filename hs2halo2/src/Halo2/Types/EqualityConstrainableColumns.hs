@@ -6,12 +6,13 @@
 module Halo2.Types.EqualityConstrainableColumns
   ( EqualityConstrainableColumns
     ( EqualityConstrainableColumns
-    , getEqualityConstrinableColumns
+    , getEqualityConstrainableColumns
     )
   ) where
 
 
 import Halo2.Prelude
+import Halo2.Types.ColumnIndex (ColumnIndex)
 
 
 newtype EqualityConstrainableColumns = EqualityConstrainableColumns { getEqualityConstrainableColumns :: Set ColumnIndex }
