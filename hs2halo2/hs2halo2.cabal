@@ -19,6 +19,7 @@ library
     Halo2.Types.Exponent
     Halo2.Types.FieldElement
     Halo2.Types.FiniteField
+    Halo2.Types.LookupArgument
     Halo2.Types.Monomial
     Halo2.Types.Polynomial
     Halo2.Types.PolynomialDegreeBound
