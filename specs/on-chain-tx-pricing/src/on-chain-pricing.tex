@@ -55,7 +55,9 @@ For the three non-free price tiers, the prices are computed independently of eac
 
 The availability surcharge will be computed off-chain by the prover. The prover will periodically write the value of the availability surcharge (denominated in ADA) to the verifier contract state UTXO via a transaction which must be signed by the prover.
 
-The initial value of the availability surcharge will be zero. Changes to the availability surcharge will be based on between the mean estimated latency for transactions occurring in the last $t$ seconds, over the target mean transaction latency. Call this ratio $r_t$. The prover will continuously compute $r_{5m}$ and $r_{1h}$, i.e. $r$ for 5 minutes and 1 hour ($m = 60, h = 60 \times 60$). If $r_{5m} > 1.2$, then the prover will raise the availability surcharge. If $r_{5m} < 1$ and $r_{1h} < 0.75$, then the prover will lower the availability surcharge.
+The initial value of the availability surcharge will be zero. Changes to the availability surcharge will be based on between the mean estimated latency for transactions occurring in the last $t$ seconds, over the target mean transaction latency. Call this ratio $r_t$. By definition, $r_t = m_t / M$, where $m_t$ is the mean of the estimate latency for transactions occurring in the last $t$ seconds and $M$ is the target mean transaction latency.
+
+The prover will continuously compute $r_{5m}$ and $r_{1h}$, i.e. $r$ for 5 minutes and 1 hour ($m = 60, h = 60 \times 60$). If $r_{5m} > 1.2$, then the prover will raise the availability surcharge. If $r_{5m} < 1$ and $r_{1h} < 0.75$, then the prover will lower the availability surcharge.
 
 When the prover raises the availability surcharge, it will do so by the following algorithm. If the availability surcharge is 0, then the prover will raise it to 1 ADA. If the availability surchage is $x > 0$, then the prover will raise it to $1.5x$.
 
