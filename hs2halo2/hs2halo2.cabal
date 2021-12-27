@@ -24,6 +24,7 @@ library
     Halo2.Types.FieldElement
     Halo2.Types.FiniteField
     Halo2.Types.FixedVariableValues
+    Halo2.Types.InputExpression
     Halo2.Types.LookupArgument
     Halo2.Types.LookupArguments
     Halo2.Types.Monomial
@@ -34,6 +35,7 @@ library
     Halo2.Types.PowerProduct
     Halo2.Types.RowIndex
     Halo2.Types.RowCount
+    Halo2.Types.TableColumn
 
   build-depends:
     base >= 4.9 && < 5,

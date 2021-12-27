@@ -1,15 +1,16 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE EmptyDataDeriving #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
 
-module Halo2.Types.LookupArgument ( LookupArgument ) where
+module Halo2.Types.LookupArgument ( LookupArgument (LookupArgument) ) where
 
 
 import Halo2.Prelude
 
+import Halo2.Types.InputExpression (InputExpression)
+import Halo2.Types.TableColumn (TableColumn)
 
-data LookupArgument
-  -- TODO LookupArgument
+
+newtype LookupArgument = LookupArgument { tableMap :: [(InputExpression, TableColumn)] }
   deriving (Eq, Ord, Show, Generic)
