@@ -4,7 +4,7 @@
 
 // We represent program failure by non-termination.
 void diverge() {
-  while (true) {}
+  while (1) {}
 }
 
 
@@ -26,10 +26,10 @@ const int HEAP_SIZE = 1024 * 16;
 void *heap_end;
 void *heap_free;
 
-void *malloc(int bytes) {
+void *alloc(int bytes) {
   if (heap_free + bytes < heap_end) {
     void *new_mem = heap_free;
-    heap_free += (void *)bytes;
+    heap_free += bytes;
     return new_mem;
   } else {
     diverge();
@@ -47,8 +47,8 @@ void *malloc(int bytes) {
 
 struct Integer {
   int less_significant;
-  BigInteger *more_significant; // null if this is the most significant word.
-}
+  struct Integer *more_significant; // null if this is the most significant word.
+};
 
 
 /*****************************************************************************
@@ -59,27 +59,36 @@ struct Integer {
 // words data (or equivalently, code) which is in beta normal form.
 
 enum NFDataType {
-    Function
-  , Integer
-  , Unit
-  , Bool
-  , Thunk // (result of Delay)
-  , Text
-  , ByteString
+    FunctionType
+  , IntegerType
+  , UnitType
+  , BoolType
+  , ThunkType // (result of Delay)
+  , TextType
+  , ByteStringType
   // , Data // TODO
 };
+
+// The third argument is a pointer to where to put the output. Is actually an
+// (NFData *) but that would make for cyclic definitions. Similarly, the second
+// argument is an (NFData *) but is represented as (void *) to avoid a cycle.
+typedef void (*Function) (void *context, void *input, void *output);
 
 // A function is represented by a closure, which is a function pointer together with
 // some data on the heap which it depends on. At this level of abstraction we
 // do not distinguish between builtin and user-defined functions.
 struct Closure {
-  NFData (*function)(void *, NFData);
+  Function apply;
   void *data; // may be null if the function does not dereference the pointer
 };
 
+// The second argument is a point to where to put the output. Is actually an
+// (NFData *) but that would make for cyclic definitions.
+typedef void (*Computation) (void *context, void *output);
+
 // A thunk is effectively a closure over a function with no arguments.
 struct Thunk {
-  NFData (*function)(void *);
+  Computation run;
   void *data;
 };
 
@@ -87,18 +96,18 @@ struct Thunk {
 struct ByteString {
   int length;
   char *bytes;
-}
+};
 
 union NFDataValue {
-  Closure closure;
-  Integer integer;
-  bool boolean;
+  struct Closure closure;
+  struct Integer integer;
+  int boolean;
   int unit; // the value stored here is meaningless / does not affect execution
-  Thunk thunk;
-  ByteString byteString;
+  struct Thunk thunk;
+  struct ByteString byteString;
 };
 
-struct NFData {
-  NFDataType type;
-  NFDataValue value;
-};
+struct {
+  enum NFDataType type;
+  union NFDataValue value;
+} NFData;
