@@ -11,6 +11,7 @@ const DWORD WORD_BIT_MASK = 0xFFFFFFFF; // set to 1 for all and only bits in the
 // The heap size. This may need to be adjusted on a per-program basis.
 const WORD HEAP_SIZE = 1024 * 16;
 
+// We represent program failure by non-termination.
 void diverge();
 
 
@@ -30,6 +31,8 @@ void diverge();
 extern void *heap_end;
 extern void *heap_free;
 
+// Allocates the given number of bytes of memory and returns a pointer to the
+// beginning of the allocated memory.
 void *alloc(WORD bytes);
 
 
@@ -52,15 +55,31 @@ struct Integer {
   struct Natural *nat;
 };
 
+// Returns a fresh copy of the given natural number.
 struct Natural *copy_nat(struct Natural *a);
+
+// Adds a to b, destructively updating b.
 void add_nat(struct Natural *a, struct Natural *b);
+
+// Returns true if a is equal to b.
 BOOL eq_nat(struct Natural *a, struct Natural *b);
+
+// Returns true if a <= b.
 BOOL leq_nat(struct Natural *a, struct Natural *b);
+
+// Subtracts natural number a from integer b, destructively updating b.
 void subtract_nat(struct Natural *a, struct Integer *b);
+
+// Multiplies b by a, destructively updating b.
 void mul_nat(struct Natural *a, struct Natural *b);
 
+// Adds a to b, destructively updating b.
 void add_int(struct Integer *a, struct Integer *b);
+
+// Subtracts a from b, destructively updating b.
 void subtract_int(struct Integer *a, struct Integer *b);
+
+// Multiplies b by a, destructively updating b.
 void mul_int(struct Integer *a, struct Integer *b);
 
 

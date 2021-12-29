@@ -6,7 +6,6 @@
 #include "./rts.h"
 
 
-// We represent program failure by non-termination.
 void diverge() {
   while (1) {}
 }
@@ -34,7 +33,6 @@ void *alloc(WORD bytes) {
  * Integers
  *****************************************************************************/
 
-// Returns a fresh copy of the given natural number.
 struct Natural *copy_nat(struct Natural *a) {
   struct Natural *b = (struct Natural *)alloc(sizeof(struct Natural));
   b->less_significant = a->less_significant;
@@ -47,7 +45,6 @@ struct Natural *copy_nat(struct Natural *a) {
 }
 
 
-// Adds a to b, destructively updating b.
 void add_nat (struct Natural *a, struct Natural *b) {
   WORD a_ls = a->less_significant;
   WORD b_ls = b->less_significant;
@@ -82,7 +79,6 @@ void add_nat (struct Natural *a, struct Natural *b) {
 }
 
 
-// Returns true if a is equal to b.
 BOOL eq_nat (struct Natural *a, struct Natural *b) {
   if (a->less_significant == b->less_significant) {
     struct Natural *a_ms = a->more_significant;
@@ -99,7 +95,7 @@ BOOL eq_nat (struct Natural *a, struct Natural *b) {
   }
 }
 
-// Returns true if a <= b.
+
 BOOL leq_nat (struct Natural *a, struct Natural *b) {
   if (eq_nat(a, b)) {
     return 1;
@@ -123,7 +119,6 @@ BOOL leq_nat (struct Natural *a, struct Natural *b) {
 }
 
 
-// Subtracts natural number a from integer b, destructively updating b.
 void subtract_nat (struct Natural *a, struct Integer *b) {
   if (b->sign == -1) {
     add_nat(a, b->nat);
@@ -191,7 +186,6 @@ void subtract_nat (struct Natural *a, struct Integer *b) {
 }
 
 
-// Multiplies b by a, destructively updating b.
 void mul_nat_by_word(WORD a, struct Natural *b) {
   WORD b_ls = b->less_significant;
   struct Natural *b_ms = b->more_significant;
@@ -214,7 +208,6 @@ void mul_nat_by_word(WORD a, struct Natural *b) {
 }
 
 
-// Multiplies b by a, destructively updating b.
 void mul_nat(struct Natural *a, struct Natural *b) {
   struct Natural *a_ms = a->more_significant;
   struct Natural *b_ms = b->more_significant;
@@ -246,7 +239,6 @@ void mul_nat(struct Natural *a, struct Natural *b) {
 }
 
 
-// Adds a to b, destructively updating b.
 void add_int(struct Integer *a, struct Integer *b) {
   WORD sa = a->sign;
   WORD sb = b->sign;
@@ -269,7 +261,6 @@ void add_int(struct Integer *a, struct Integer *b) {
 }
 
 
-// Subtracts a from b, destructively updating b.
 void subtract_int(struct Integer *a, struct Integer *b) {
   struct Integer c;
   c.sign = -a->sign;
@@ -278,7 +269,6 @@ void subtract_int(struct Integer *a, struct Integer *b) {
 }
 
 
-// Multiplies b by a, destructively updating b.
 void mul_int(struct Integer *a, struct Integer *b) {
   b->sign = a->sign * b->sign;
   mul_nat(a->nat, b->nat);
