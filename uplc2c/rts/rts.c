@@ -6,10 +6,12 @@
 #include <stdint.h>
 
 #define WORD int32_t
+#define WORD_BITS 32
 #define DWORD int64_t
 #define BOOL int
 
 const extern WORD MAX_WORD;
+const extern DWORD WORD_BIT_MASK; // set to 1 for all and only bits in the first word
 
 
 // We represent program failure by non-termination.
@@ -102,6 +104,7 @@ void add_nat (struct Natural *a, struct Natural *b) {
   }
 }
 
+
 // Returns true if a is equal to b.
 BOOL eq_nat (struct Natural *a, struct Natural *b) {
   if (a->less_significant == b->less_significant) {
@@ -141,6 +144,7 @@ BOOL leq_nat (struct Natural *a, struct Natural *b) {
     }
   }
 }
+
 
 // Subtracts natural number a from integer b, destructively updating b.
 void subtract_nat (struct Natural *a, struct Integer *b) {
@@ -208,6 +212,29 @@ void subtract_nat (struct Natural *a, struct Integer *b) {
     b->nat = c.nat;
   }
 }
+
+
+// Multiplies b by a, destructively updating b.
+void mul_nat(struct Natural *a, struct Natural *b) {
+  struct Natural *a_ms = a->more_significant;
+  struct Natural *b_ms = b->more_significant;
+  WORD a_ls = a->less_significant;
+  WORD b_ls = b->less_significant;
+  if (!(a_ms || b_ms)) {
+    DWORD p = (DWORD)a_ls * (DWORD)b_ls;
+    WORD p_ms = (WORD)(p >> WORD_BITS);
+    WORD p_ls = (WORD)(p && WORD_BIT_MASK);
+    if (p_ms) {
+      b_ms = (struct Natural *)alloc(sizeof(struct Natural *));
+      b->more_significant = b_ms;
+      b_ms->less_significant = p_ms;
+      b_ms->more_significant = 0;
+    }
+  } else {
+    // TODO
+  }
+}
+
 
 // Adds a to b, destructively updating b.
 void add_int(struct Integer *a, struct Integer *b) {
