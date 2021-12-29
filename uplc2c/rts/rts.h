@@ -73,6 +73,16 @@ void subtract_nat(struct Natural *a, struct Integer *b);
 // Multiplies b by a, destructively updating b.
 void mul_nat(struct Natural *a, struct Natural *b);
 
+
+// Returns true if a is equal to b.
+BOOL eq_int(struct Integer *a, struct Integer *b);
+
+// Returns true if a is less than b.
+BOOL less_int(struct Integer *a, struct Integer *b);
+
+// Returns true if a <= b.
+BOOL leq_int(struct Integer *a, struct Integer *b);
+
 // Adds a to b, destructively updating b.
 void add_int(struct Integer *a, struct Integer *b);
 
@@ -81,6 +91,49 @@ void subtract_int(struct Integer *a, struct Integer *b);
 
 // Multiplies b by a, destructively updating b.
 void mul_int(struct Integer *a, struct Integer *b);
+
+// Divides b by a, storing the result truncated towards negative infinity in c.
+void div_int(struct Integer *a, struct Integer *b, struct Integer *c);
+
+// Divides b by a, storing the modulus in c. Identifies with div.
+void mod_int(struct Integer *a, struct Integer *b, struct Integer *c);
+
+// Divides b by a, storing the result truncated towards zero in c.
+void quotient_int(struct Integer *a, struct Integer *b, struct Integer *c);
+
+// Divides b by a, storing the remainder in c. Identifies with quotient.
+void remainder_int(struct Integer *a, struct Integer *b, struct Integer *c);
+
+
+/*****************************************************************************
+ * ByteStrings
+ *****************************************************************************/
+
+// This struct represents a Text or a ByteString depending on the type tag.
+// Text is UTF8-encoded, so the EncodeUtf8 and DecodeUtf8 builtins are no-ops on the
+// underlying ByteString; they only change the type tag.
+struct ByteString {
+  int length;
+  char *bytes;
+};
+
+// Creates a new ByteString appending the two inputs. This also works for appending strings.
+struct ByteString *append_bytestring(struct ByteString *a, struct ByteString *b);
+
+// Returns true if the two inputs are equal. This works for both strings and bytestrings.
+BOOL eq_bytestring(struct ByteString *a, struct ByteString *b);
+
+// Creates a new ByteString prepending the given byte.
+struct ByteString *cons_bytestring(char a, struct ByteString *b);
+
+// Creates a new ByteString which is a slice of the given ByteString.
+struct ByteString *slice_bytestring(struct ByteString *s, WORD start, WORD length);
+
+// Returns true if a is less than or equal to b in lexicographical byte order.
+struct ByteString *leq_bytestring(struct ByteString *a, struct ByteString *b);
+
+// Returns true if a is less than b in lexicographical byte order.
+struct ByteString *less_bytestring(struct ByteString *a, struct ByteString *b);
 
 
 /*****************************************************************************
@@ -123,12 +176,6 @@ typedef void (*Computation) (void *context, void *output);
 struct Thunk {
   Computation run;
   void *data;
-};
-
-// This struct represents a Text or a ByteString depending on the type tag.
-struct ByteString {
-  int length;
-  char *bytes;
 };
 
 union NFDataValue {
