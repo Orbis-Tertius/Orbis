@@ -314,6 +314,13 @@ void subtract_int(struct Integer *a, struct Integer *b) {
 }
 
 
+// Multiplies b by a, destructively updating b.
+void mul_int(struct Integer *a, struct Integer *b) {
+  b->sign = a->sign * b->sign;
+  mul_nat(a->nat, b->nat);
+}
+
+
 /*****************************************************************************
  * NFData
  *****************************************************************************/
