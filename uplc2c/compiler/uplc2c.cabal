@@ -30,3 +30,27 @@ library
   ghc-options:
           -Wall -Werror -Wcompat -fwarn-redundant-constraints -fwarn-incomplete-uni-patterns
           -fwarn-tabs -fwarn-incomplete-record-updates -fwarn-identities -Wmissing-export-lists
+
+
+executable uplc2c
+  main-is: Main.hs
+
+  build-depends:
+    base >= 4.9 && < 5,
+    aeson,
+    bytestring,
+    containers,
+    either,
+    extra,
+    generic-lens,
+    ghc-prim,
+    hedgehog -any,
+    lens,
+    text -any,
+    mtl
+
+  hs-source-dirs: exe
+  default-language: Haskell2010
+  ghc-options:
+          -Wall -Werror -Wcompat -fwarn-redundant-constraints -fwarn-incomplete-uni-patterns
+          -fwarn-tabs -fwarn-incomplete-record-updates -fwarn-identities -Wmissing-export-lists

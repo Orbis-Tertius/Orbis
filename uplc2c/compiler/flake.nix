@@ -61,6 +61,6 @@
         pkgs = import nixpkgs { inherit system overlays; inherit (haskellNix) config; };
         flake = pkgs.uplc2c.flake { };
       in flake // {
-        defaultPackage = flake.packages.uplc2c;
+        defaultPackage = flake.packages."uplc2c:exe:uplc2c";
       });
 }
