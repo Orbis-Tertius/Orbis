@@ -182,7 +182,7 @@ void subtract_nat (Natural *a, Integer *b) {
 	if (eq_nat(b_ms, zero)) {
           b->more_significant = 0;
 	}
-	b->less_significant = b - a + MAX_INT;
+	b->less_significant = (b - a) + MAX_INT;
       }
     }
   } else {
