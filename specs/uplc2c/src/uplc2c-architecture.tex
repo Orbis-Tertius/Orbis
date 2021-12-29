@@ -21,14 +21,14 @@ UPLC2C aims to produce small vnTinyRAM object code which executes efficiently on
 
 UPLC2C aims to be rigorously verified by property tests and practical use, and eventually formal verification. Verification should include checking that compilation is a semantics preserving process. For our purposes, we are interested in one thing: does the compiled program have the same semantics as the input program? The UPLC programs we are interested in compiling are on-chain scripts, which produce no output, indicating only success (acceptance) or failure (rejection). Success is indicated by termination; failure is indicated by non-termination. Thus the key semantics-preservation property we are interested in is, for any given UPLC program and any given input to the program, does the UPLC program interpreted by the canonical interpreter halt (i.e. accept) on all and only the same inputs as the compiled version running on the vnTinyRAM circuit? We are also interested in checking the same property with respect to the x86 object code generated from the C code output of \texttt{uplc2c}.
 
-The system architecture and data flow is depicted in Figure~\ref{fig:system}.
+The system architecture and data flow is depicted in Figure~\ref{fig:system}. The UPLC source code is in another sense object code, being output of another compiler, but in this context, it is considered as source code. \texttt{uplc2c} is the UPLC to C compiler, which is a Haskell program. It takes the UPLC source code as input and produces C code as output. This compiler output is then provided as input to \texttt{gcc}, along with the runtime system, here depicted as two files, \texttt{rts.c} (containing implementations of the runtime system subroutines) and \texttt{rts.h} (the corresponding header file). These three files are all the input \texttt{gcc} needs to produce executable object code for some architecture. Here we depict two compilation targets for \texttt{gcc}: x86 and vnTinyRAM. RTL is the register transfer language, which is the representation of input to \texttt{gcc} backends. \cite{rtl}
 
 \begin{figure}
 	\includegraphics[width=1.0\columnwidth]{system-and-process-diagram.pdf}
 	\caption{The UPLC2C system architecture and data flow.}
 \end{figure}
 
-\begin{thebibliography}{5}
+\begin{thebibliography}{6}
 
 	\bibitem{plutus} IOHK. \textit{Plutus.} \url{https://github.com/input-output-hk/plutus}
 
@@ -40,6 +40,9 @@ The system architecture and data flow is depicted in Figure~\ref{fig:system}.
 
 	\bibitem{ethworks-20}
 Ethworks. \textit{Zero-Knowledge Blockchain Scalability}. Ethworks Reports, 2020. \url{https://ethworks.io/assets/download/zero-knowledge-blockchain-scaling-ethworks.pdf}
+
+\bibitem{rtl}
+	Free Software Foundation, Inc. \textit{GNU Compiler Collection (GCC) Internals.} 2021. \url{https://gcc.gnu.org/onlinedocs/gccint/RTL.html}
 
 \end{thebibliography}
 
