@@ -1,0 +1,39 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{hyperref}
+
+\title{UPLC2C Compiler and Runtime System Architecture}
+\author{Ardana Labs}
+
+
+\begin{document}
+
+
+\maketitle
+
+UPLC2C is a simple compiler and runtime system for Untyped Plutus Core (UPLC). UPLC is a simple $\lambda$-calculus based programming language, usable via frontends like Plutus \cite{plutus} and Plut(o/arch). \cite{pluto,plutarch} UPLC is the language used to deploy scripts on Cardano. The purpose of UPLC2C is to compile UPLC to C, so that it may then be compiled to vnTinyRAM \cite{vntinyram} object code, so that it may be executed on a vnTinyRAM virtual machine built as an arithmetic circuit, which may be used to generate zkSNARK proofs of program traces in order to build ZK rollups. Since the goal is to provide a ZK rollup solution for Cardano, similar to those existing for Ethereum, \cite{ethworks-20}, a UPLC to C compiler together with a C to vnTinyRAM compiler, allow for a smooth migration pathway for dapp developers looking to put their existing Cardano dapps on a ZK rollup.
+
+UPLC2C aims to produce small vnTinyRAM object code which executes efficiently on a vnTinyRAM VM implemented as an arithmetic circuit. It is assumed that it is important to produce small object code in order to economize on the RAM requirements inside the VM, which is assumed to impact circuit size and proof generation cost. 
+
+UPLC2C aims to be rigorously verified by property tests and practical use, and eventually formal verification. Verification should include checking that compilation is a semantics preserving process. For our purposes, we are interested in one thing: does the compiled program have the same semantics as the input program? The UPLC programs we are interested in compiling are on-chain scripts, which produce no output, indicating only success (acceptance) or failure (rejection). Success is indicated by termination; failure is indicated by non-termination. Thus the key semantics-preservation property we are interested in is, for any given UPLC program and any given input to the program, does the UPLC program interpreted by the canonical interpreter halt (i.e. accept) on all and only the same inputs as the compiled version running on the vnTinyRAM circuit? We are also interested in checking the same property with respect to the x86 object code generated from the C code output of \texttt{uplc2c}.
+
+\begin{thebibliography}{5}
+
+	\bibitem{plutus} IOHK. \textit{Plutus.} \url{https://github.com/input-output-hk/plutus}
+
+	\bibitem{pluto} Plutonomicon. \textit{Pluto.} \url{https://github.com/Plutonomicon/pluto}
+
+	\bibitem{plutarch} Plutonomicon. \textit{Plutarch.} \url{https://github.com/Plutonomicon/plutarch}
+
+	\bibitem{vntinyram} Eli Ben-Sasson, Alesandro Chiesa, Eran Tromer, and Madars Virza. \textit{Succinct Non-Interactive Zero-Knowledge for a von Neumann Architecture.} 2019. \url{https://eprint.iacr.org/2013/879.pdf}
+
+	\bibitem{ethworks-20}
+Ethworks. \textit{Zero-Knowledge Blockchain Scalability}. Ethworks Reports, 2020. \url{https://ethworks.io/assets/download/zero-knowledge-blockchain-scaling-ethworks.pdf}
+
+\end{thebibliography}
+
+\end{document}
