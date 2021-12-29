@@ -92,6 +92,111 @@ void add_nat (Natural *a, Natural *b) {
   }
 }
 
+// Returns true if a is equal to b.
+int eq_nat (Natural *a, Natural *b) {
+  if (a->less_significant == b->less_significant) {
+    Natural *a_ms = a->more_significant;
+    Natural *b_ms = b->more_significant;
+    if (!(a_ms || b_ms)) {
+      return 1;
+    } else if (a_ms && b_ms) {
+      return eq_nat(a_ms, b_ms);
+    } else {
+      return 0;
+    }
+  } else {
+    return 0;
+  }
+}
+
+// Returns true if a <= b.
+int leq_nat (Natural *a, Natural *b) {
+  if (eq_nat(a, b)) {
+    return 1;
+  } else {
+    Natural *a_ms = a->more_significant;
+    Natural *b_ms = b->more_significant;
+    if (a_ms && b_ms) {
+      if (eq_nat(a_ms, b_ms)) {
+        return a->less_significant <= b->less_significant;
+      } else {
+        return leq_nat(a_ms, b_ms);
+      }
+    } else if (a_ms) {
+      return 0;
+    } else if (b_ms) {
+      return 1;
+    } else {
+      return a->less_significant <= b->less_significant;
+    }
+  }
+}
+
+// Subtracts natural number a from integer b, destructively updating b.
+void subtract_nat (Natural *a, Integer *b) {
+  if (b->sign == -1) {
+    add_nat(a, b->nat);
+  } else if (leq_nat(a, b->nat)) {
+    // b >= 0 and a <= b, so b - a >= 0
+    Natural *a_ms = a->more_significant;
+    Natural *b_ms = b->nat->more_significant;
+    int a_ls = a->less_significant;
+    int b_ls = b->less_significant;
+    if (!(a_ms || b_ms)) {
+      if (a_ls <= b_ls) {
+        b->less_significant = b_ls - a_ls;
+      } else {
+        b->sign = -1;
+	b->less_significant = a_ls - b_ls;
+      }
+    } else if (a_ms && b_ms) {
+      int carry = 0;
+      if (a_ls <= b_ls) {
+        b->less_significant -= a_ls;
+      } else {
+	// a_ls > b_ls
+        carry = 1;
+	b->less_significant = (b_ls - MAX_INT) + a_ls;
+      }
+      if (carry) {
+        Natural c;
+        c.less_significant = carry;
+        c.more_significant = 0;
+	subtract_nat(&c, b_ms); // type error, int vs nat
+      }
+      subtract_nat(a_ms, b_ms); // type error, int vs nat
+    } else {
+      // a_ms || b_ms but !(a_ms && b_ms), but a <= b, so, !a_ms && b_ms
+      int a_ls = a->less_significant;
+      int b_ls = b->less_significant;
+      if (a_ls <= b_ls) {
+        b->less_significant -= a_ls;
+      } else {
+	struct Natural one;
+	one.less_significant = 1;
+	one.more_significant = 0;
+	struct Natural zero;
+	zero.less_significant = 0;
+	zero.more_significant = 0;
+	subtract_nat(one, b_ms); // type error, int vs nat
+	if (eq_nat(b_ms, zero)) {
+          b->more_significant = 0;
+	}
+	b->less_significant = b - a + MAX_INT;
+      }
+    }
+  } else {
+    // b >= 0 and a > b, so b - a < 0
+    Integer c;
+    c.sign = -1;
+    c.nat = a;
+    subtract_nat(b->nat, &c);
+    b->nat = c.nat;
+  }
+}
+
+// Adds a to b, destructively updating b.
+
 
 /*****************************************************************************
  * NFData
@@ -142,8 +247,8 @@ struct ByteString {
 };
 
 union NFDataValue {
-  struct Closure closure;
-  struct Integer integer;
+  struct Closure fn;
+  struct Natural nat;
   int boolean;
   int unit; // the value stored here is meaningless / does not affect execution
   struct Thunk thunk;
