@@ -202,6 +202,26 @@ void subtract_nat (struct Natural *a, struct Integer *b) {
 }
 
 // Adds a to b, destructively updating b.
+void add_int(struct Integer *a, struct Integer *b) {
+  int sa = a->sign;
+  int sb = b->sign;
+  if (sa == sb) {
+    add_nat(a->nat, b->nat);
+  } else if (sa == -1) {
+    subtract_nat(a->nat, b);
+  } else if (leq_nat(a->nat, b->nat)) {
+    // sb == -1 and sa == 1 and a <= |b|
+    b->sign = 1;
+    subtract_nat(a->nat, b);
+    b->sign = -1;
+  } else {
+    // sb == -1 and sa == 1 and a > |b|
+    b->sign = 1;
+    struct Natural *nb = b->nat;
+    b->nat = a->nat;
+    subtract_nat(nb, b);
+  }
+}
 
 
 /*****************************************************************************
