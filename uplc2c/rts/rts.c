@@ -2,6 +2,16 @@
 // This C code is to be included in the uplc2c compiler output for each program.
 // This RTS is designed for compact code more so than performance or efficiency.
 
+
+#include <stdint.h>
+
+#define WORD int32_t
+#define DWORD int64_t
+#define BOOL int
+
+const extern WORD MAX_WORD;
+
+
 // We represent program failure by non-termination.
 void diverge() {
   while (1) {}
@@ -18,9 +28,7 @@ void diverge() {
 // where programs are expected to have short lifetimes.
 
 // The heap size. This may need to be adjusted on a per-program basis.
-const int HEAP_SIZE = 1024 * 16;
-
-const extern int MAX_INT;
+const WORD HEAP_SIZE = 1024 * 16;
 
 // Technically, the heap is stored on the stack, and the main() function
 // must set these global variables to point respectively to the end of the
@@ -28,7 +36,7 @@ const extern int MAX_INT;
 void *heap_end;
 void *heap_free;
 
-void *alloc(int bytes) {
+void *alloc(WORD bytes) {
   if (heap_free + bytes < heap_end) {
     void *new_mem = heap_free;
     heap_free += bytes;
@@ -49,26 +57,26 @@ void *alloc(int bytes) {
 // least significant word first.
 
 struct Natural {
-  int less_significant; // must be non-negative
+  WORD less_significant; // must be non-negative
   struct Natural *more_significant; // null if this is the most significant word.
 };
 
 
 struct Integer {
-  int sign;
+  WORD sign;
   struct Natural *nat;
 };
 
 
 // Adds a to b, destructively updating b.
 void add_nat (struct Natural *a, struct Natural *b) {
-  int a_ls = a->less_significant;
-  int b_ls = b->less_significant;
-  int carry = 0;
-  int d = a_ls + b_ls;
+  WORD a_ls = a->less_significant;
+  WORD b_ls = b->less_significant;
+  WORD carry = 0;
+  WORD d = a_ls + b_ls;
   if (d < 0) {
     carry = 1;
-    d = (a_ls - MAX_INT) + b_ls;
+    d = (a_ls - MAX_WORD) + b_ls;
   }
   b->less_significant = d;
   struct Natural *a_ms = a->more_significant;
@@ -95,7 +103,7 @@ void add_nat (struct Natural *a, struct Natural *b) {
 }
 
 // Returns true if a is equal to b.
-int eq_nat (struct Natural *a, struct Natural *b) {
+BOOL eq_nat (struct Natural *a, struct Natural *b) {
   if (a->less_significant == b->less_significant) {
     struct Natural *a_ms = a->more_significant;
     struct Natural *b_ms = b->more_significant;
@@ -112,7 +120,7 @@ int eq_nat (struct Natural *a, struct Natural *b) {
 }
 
 // Returns true if a <= b.
-int leq_nat (struct Natural *a, struct Natural *b) {
+BOOL leq_nat (struct Natural *a, struct Natural *b) {
   if (eq_nat(a, b)) {
     return 1;
   } else {
@@ -142,8 +150,8 @@ void subtract_nat (struct Natural *a, struct Integer *b) {
     // b >= 0 and a <= b, so b - a >= 0
     struct Natural *a_ms = a->more_significant;
     struct Natural *b_ms = b->nat->more_significant;
-    int a_ls = a->less_significant;
-    int b_ls = b->nat->less_significant;
+    WORD a_ls = a->less_significant;
+    WORD b_ls = b->nat->less_significant;
     struct Integer b_ms_i;
     b_ms_i.sign = 1;
     b_ms_i.nat = b_ms;
@@ -162,7 +170,7 @@ void subtract_nat (struct Natural *a, struct Integer *b) {
       } else {
 	// a_ls > b_ls
         carry = 1;
-	b->nat->less_significant = (b_ls - MAX_INT) + a_ls;
+	b->nat->less_significant = (b_ls - MAX_WORD) + a_ls;
       }
       if (carry) {
         struct Natural c;
@@ -173,8 +181,8 @@ void subtract_nat (struct Natural *a, struct Integer *b) {
       subtract_nat(a_ms, &b_ms_i);
     } else {
       // a_ms || b_ms but !(a_ms && b_ms), but a <= b, so, !a_ms && b_ms
-      int a_ls = a->less_significant;
-      int b_ls = b->nat->less_significant;
+      WORD a_ls = a->less_significant;
+      WORD b_ls = b->nat->less_significant;
       if (a_ls <= b_ls) {
         b->nat->less_significant -= a_ls;
       } else {
@@ -188,7 +196,7 @@ void subtract_nat (struct Natural *a, struct Integer *b) {
 	if (eq_nat(b_ms, &zero)) {
           b->nat->more_significant = 0;
 	}
-	b->nat->less_significant = (b_ls - a_ls) + MAX_INT;
+	b->nat->less_significant = (b_ls - a_ls) + MAX_WORD;
       }
     }
   } else {
@@ -203,8 +211,8 @@ void subtract_nat (struct Natural *a, struct Integer *b) {
 
 // Adds a to b, destructively updating b.
 void add_int(struct Integer *a, struct Integer *b) {
-  int sa = a->sign;
-  int sb = b->sign;
+  WORD sa = a->sign;
+  WORD sb = b->sign;
   if (sa == sb) {
     add_nat(a->nat, b->nat);
   } else if (sa == -1) {
