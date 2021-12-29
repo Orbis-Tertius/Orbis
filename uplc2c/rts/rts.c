@@ -20,6 +20,8 @@ void diverge() {
 // The heap size. This may need to be adjusted on a per-program basis.
 const int HEAP_SIZE = 1024 * 16;
 
+const extern int MAX_INT;
+
 // Technically, the heap is stored on the stack, and the main() function
 // must set these global variables to point respectively to the end of the
 // heap (heap_end) and the next free byte in the heap (heap_free);
@@ -54,12 +56,12 @@ struct Natural {
 
 struct Integer {
   int sign;
-  Natural nat;
+  struct Natural *nat;
 };
 
 
 // Adds a to b, destructively updating b.
-void add_nat (Natural *a, Natural *b) {
+void add_nat (struct Natural *a, struct Natural *b) {
   int a_ls = a->less_significant;
   int b_ls = b->less_significant;
   int carry = 0;
@@ -73,7 +75,7 @@ void add_nat (Natural *a, Natural *b) {
   struct Natural *b_ms = b->more_significant;
   if (a_ms || b_ms || carry) {
     if (!b_ms) {
-      b_ms = (Natural *)alloc(sizeof(Natural));
+      b_ms = (struct Natural *)alloc(sizeof(struct Natural));
       b_ms->less_significant = 0;
       b_ms->more_significant = 0;
       b->more_significant = b_ms;
@@ -93,10 +95,10 @@ void add_nat (Natural *a, Natural *b) {
 }
 
 // Returns true if a is equal to b.
-int eq_nat (Natural *a, Natural *b) {
+int eq_nat (struct Natural *a, struct Natural *b) {
   if (a->less_significant == b->less_significant) {
-    Natural *a_ms = a->more_significant;
-    Natural *b_ms = b->more_significant;
+    struct Natural *a_ms = a->more_significant;
+    struct Natural *b_ms = b->more_significant;
     if (!(a_ms || b_ms)) {
       return 1;
     } else if (a_ms && b_ms) {
@@ -110,12 +112,12 @@ int eq_nat (Natural *a, Natural *b) {
 }
 
 // Returns true if a <= b.
-int leq_nat (Natural *a, Natural *b) {
+int leq_nat (struct Natural *a, struct Natural *b) {
   if (eq_nat(a, b)) {
     return 1;
   } else {
-    Natural *a_ms = a->more_significant;
-    Natural *b_ms = b->more_significant;
+    struct Natural *a_ms = a->more_significant;
+    struct Natural *b_ms = b->more_significant;
     if (a_ms && b_ms) {
       if (eq_nat(a_ms, b_ms)) {
         return a->less_significant <= b->less_significant;
@@ -133,44 +135,48 @@ int leq_nat (Natural *a, Natural *b) {
 }
 
 // Subtracts natural number a from integer b, destructively updating b.
-void subtract_nat (Natural *a, Integer *b) {
+void subtract_nat (struct Natural *a, struct Integer *b) {
   if (b->sign == -1) {
     add_nat(a, b->nat);
   } else if (leq_nat(a, b->nat)) {
     // b >= 0 and a <= b, so b - a >= 0
-    Natural *a_ms = a->more_significant;
-    Natural *b_ms = b->nat->more_significant;
+    struct Natural *a_ms = a->more_significant;
+    struct Natural *b_ms = b->nat->more_significant;
     int a_ls = a->less_significant;
-    int b_ls = b->less_significant;
+    int b_ls = b->nat->less_significant;
+    struct Integer b_ms_i;
+    b_ms_i.sign = 1;
+    b_ms_i.nat = b_ms;
+
     if (!(a_ms || b_ms)) {
       if (a_ls <= b_ls) {
-        b->less_significant = b_ls - a_ls;
+        b->nat->less_significant = b_ls - a_ls;
       } else {
         b->sign = -1;
-	b->less_significant = a_ls - b_ls;
+	b->nat->less_significant = a_ls - b_ls;
       }
     } else if (a_ms && b_ms) {
       int carry = 0;
       if (a_ls <= b_ls) {
-        b->less_significant -= a_ls;
+        b->nat->less_significant -= a_ls;
       } else {
 	// a_ls > b_ls
         carry = 1;
-	b->less_significant = (b_ls - MAX_INT) + a_ls;
+	b->nat->less_significant = (b_ls - MAX_INT) + a_ls;
       }
       if (carry) {
-        Natural c;
+        struct Natural c;
         c.less_significant = carry;
         c.more_significant = 0;
-	subtract_nat(&c, b_ms); // type error, int vs nat
+	subtract_nat(&c, &b_ms_i);
       }
-      subtract_nat(a_ms, b_ms); // type error, int vs nat
+      subtract_nat(a_ms, &b_ms_i);
     } else {
       // a_ms || b_ms but !(a_ms && b_ms), but a <= b, so, !a_ms && b_ms
       int a_ls = a->less_significant;
-      int b_ls = b->less_significant;
+      int b_ls = b->nat->less_significant;
       if (a_ls <= b_ls) {
-        b->less_significant -= a_ls;
+        b->nat->less_significant -= a_ls;
       } else {
 	struct Natural one;
 	one.less_significant = 1;
@@ -178,16 +184,16 @@ void subtract_nat (Natural *a, Integer *b) {
 	struct Natural zero;
 	zero.less_significant = 0;
 	zero.more_significant = 0;
-	subtract_nat(one, b_ms); // type error, int vs nat
-	if (eq_nat(b_ms, zero)) {
-          b->more_significant = 0;
+	subtract_nat(&one, &b_ms_i);
+	if (eq_nat(b_ms, &zero)) {
+          b->nat->more_significant = 0;
 	}
-	b->less_significant = (b - a) + MAX_INT;
+	b->nat->less_significant = (b_ls - a_ls) + MAX_INT;
       }
     }
   } else {
     // b >= 0 and a > b, so b - a < 0
-    Integer c;
+    struct Integer c;
     c.sign = -1;
     c.nat = a;
     subtract_nat(b->nat, &c);
