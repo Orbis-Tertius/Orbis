@@ -70,6 +70,19 @@ struct Integer {
 };
 
 
+// Returns a fresh copy of the given natural number.
+struct Natural *copy_nat(struct Natural *a) {
+  struct Natural *b = (struct Natural *)alloc(sizeof(struct Natural));
+  b->less_significant = a->less_significant;
+  struct Natural *a_ms = a->more_significant;
+  if (a_ms) {
+    b->more_significant = copy_nat(a_ms);
+  } else {
+    b->more_significant = 0;
+  }
+}
+
+
 // Adds a to b, destructively updating b.
 void add_nat (struct Natural *a, struct Natural *b) {
   WORD a_ls = a->less_significant;
@@ -215,6 +228,29 @@ void subtract_nat (struct Natural *a, struct Integer *b) {
 
 
 // Multiplies b by a, destructively updating b.
+void mul_nat_by_word(WORD a, struct Natural *b) {
+  WORD b_ls = b->less_significant;
+  struct Natural *b_ms = b->more_significant;
+  DWORD p = (DWORD)a * (DWORD)b_ls;
+  WORD p_ms = (WORD)(p >> WORD_BITS);
+  WORD p_ls = (WORD)(p && WORD_BIT_MASK);
+  struct Natural p_ms_n;
+  p_ms_n.less_significant = p_ms;
+  p_ms_n.more_significant = 0;
+  if (b_ms) {
+    mul_nat_by_word(a, b_ms);
+    add_nat(&p_ms_n, b_ms);
+  } else if (p_ms) {
+    b_ms = (struct Natural *)alloc(sizeof(struct Natural));
+    b->more_significant = b_ms;
+    b_ms->less_significant = p_ms;
+    b_ms->more_significant = 0;
+  }
+  b->less_significant = p_ls;
+}
+
+
+// Multiplies b by a, destructively updating b.
 void mul_nat(struct Natural *a, struct Natural *b) {
   struct Natural *a_ms = a->more_significant;
   struct Natural *b_ms = b->more_significant;
@@ -225,13 +261,23 @@ void mul_nat(struct Natural *a, struct Natural *b) {
     WORD p_ms = (WORD)(p >> WORD_BITS);
     WORD p_ls = (WORD)(p && WORD_BIT_MASK);
     if (p_ms) {
-      b_ms = (struct Natural *)alloc(sizeof(struct Natural *));
+      b_ms = (struct Natural *)alloc(sizeof(struct Natural));
       b->more_significant = b_ms;
       b_ms->less_significant = p_ms;
       b_ms->more_significant = 0;
     }
   } else {
-    // TODO
+    if (a_ms) {
+      struct Natural *c = copy_nat(b);
+      mul_nat_by_word(a_ls, c);
+      struct Natural *d = (struct Natural *)alloc(sizeof(struct Natural));
+      d->less_significant = 0;
+      d->more_significant = a_ms;
+      mul_nat(d, b);
+      add_nat(c, b);
+    } else {
+      mul_nat_by_word(a_ls, b);
+    }
   }
 }
 
