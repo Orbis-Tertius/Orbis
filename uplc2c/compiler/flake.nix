@@ -1,5 +1,5 @@
 {
-  nixConfig.bash-prompt = "[nix-develop-pluto:] ";
+  nixConfig.bash-prompt = "[nix-develop-uplc2c:] ";
   description = "A very basic flake";
   inputs.haskellNix.url = "github:input-output-hk/haskell.nix";
   inputs.nixpkgs.follows = "haskellNix/nixpkgs-unstable";
@@ -15,7 +15,7 @@
           haskellNix.overlay
           (final: prev: {
             # This overlay adds our project to pkgs
-            pluto =
+            uplc2c =
               final.haskell-nix.project' {
                 src = ./.;
                 compiler-nix-name = "ghc8107";
@@ -59,8 +59,8 @@
           })
         ];
         pkgs = import nixpkgs { inherit system overlays; inherit (haskellNix) config; };
-        flake = pkgs.pluto.flake { };
+        flake = pkgs.uplc2c.flake { };
       in flake // {
-        defaultPackage = flake.packages."pluto:exe:pluto";
+        defaultPackage = flake.packages.uplc2c;
       });
 }
