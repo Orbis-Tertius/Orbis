@@ -224,6 +224,15 @@ void add_int(struct Integer *a, struct Integer *b) {
 }
 
 
+// Subtracts a from b, destructively updating b.
+void subtract_int(struct Integer *a, struct Integer *b) {
+  struct Integer c;
+  c.sign = -a->sign;
+  c.nat = a->nat;
+  add_int(&c, b);
+}
+
+
 /*****************************************************************************
  * NFData
  *****************************************************************************/
