@@ -191,3 +191,15 @@ struct {
   enum NFDataType type;
   union NFDataValue value;
 } NFData;
+
+
+/*****************************************************************************
+ * Lexical scopes
+ *****************************************************************************/
+
+// A lexical scope is represented as a linked list of variable bindings,
+// with the lower de Bruijn indices being first.
+struct LexicalScope {
+  struct NFData *first;
+  struct LexicalScope *rest;
+};
