@@ -11,6 +11,8 @@ library
   exposed-modules:
     UPLC2C.Prelude
     UPLC2C.Types.CName
+    UPLC2C.Types.CFunctionDefinition
+    UPLC2C.Types.DeBruijnIndex
 
   build-depends:
     base >= 4.9 && < 5,
