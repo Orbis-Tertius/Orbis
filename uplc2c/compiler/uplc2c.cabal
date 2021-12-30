@@ -17,6 +17,7 @@ library
     UPLC2C.Types.CFunctionDefinition
     UPLC2C.Types.CProgram
     UPLC2C.Types.CProgramBuilder
+    UPLC2C.Types.CProgramBuilderT
     UPLC2C.Types.DeBruijnIndex
     UPLC2C.Types.UPLCTerm
 
@@ -33,7 +34,9 @@ library
     lens,
     plutus-core,
     raw-strings-qq,
+    string-random,
     text -any,
+    transformers,
     mtl
 
   hs-source-dirs: src
