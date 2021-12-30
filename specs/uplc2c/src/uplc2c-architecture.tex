@@ -15,7 +15,7 @@
 
 \maketitle
 
-UPLC2C is a simple compiler and runtime system for Untyped Plutus Core (UPLC). UPLC is a simple $\lambda$-calculus based programming language, usable via frontends like Plutus \cite{plutus} and Plut(o/arch). \cite{pluto,plutarch} UPLC is the language used to deploy scripts on Cardano. The purpose of UPLC2C is to compile UPLC to C, so that it may then be compiled to vnTinyRAM \cite{vntinyram} object code, so that it may be executed on a vnTinyRAM virtual machine built as an arithmetic circuit, which may be used to generate zkSNARK proofs of program traces in order to build ZK rollups. Since the goal is to provide a ZK rollup solution for Cardano, similar to those existing for Ethereum, \cite{ethworks-20}, a UPLC to C compiler together with a C to vnTinyRAM compiler, allow for a smooth migration pathway for dapp developers looking to put their existing Cardano dapps on a ZK rollup.
+This is an architecture proposal for a new program, UPLC2C, which is a simple compiler and runtime system for Untyped Plutus Core (UPLC). UPLC is a simple $\lambda$-calculus based programming language, usable via frontends like Plutus \cite{plutus} and Plut(o/arch). \cite{pluto,plutarch} UPLC is the language used to deploy scripts on Cardano. The purpose of UPLC2C is to compile UPLC to C, so that it may then be compiled to vnTinyRAM \cite{vntinyram} object code, so that it may be executed on a vnTinyRAM virtual machine built as an arithmetic circuit, which may be used to generate zkSNARK proofs of program traces in order to build ZK rollups. Since the goal is to provide a ZK rollup solution for Cardano, similar to those existing for Ethereum, \cite{ethworks-20}, a UPLC to C compiler, together with a C to vnTinyRAM compiler, allow for a smooth migration pathway for dapp developers looking to put their existing Cardano dapps on a ZK rollup.
 
 UPLC2C aims to produce small vnTinyRAM object code which executes efficiently on a vnTinyRAM VM implemented as an arithmetic circuit. It is assumed that it is important to produce small object code in order to economize on the RAM requirements inside the VM, which is assumed to impact circuit size and proof generation cost. 
 
@@ -24,6 +24,7 @@ UPLC2C aims to be rigorously verified by property tests and practical use, and e
 \begin{figure}
 	\includegraphics[width=1.0\columnwidth]{system-and-process-diagram.pdf}
 	\caption{The UPLC2C system architecture and data flow.}
+	\label{fig:system}
 \end{figure}
 
 The system architecture and data flow is depicted in Figure~\ref{fig:system}. The UPLC source code is in another sense object code, being output of another compiler, but in this context, it is considered as source code. \texttt{uplc2c} is the UPLC to C compiler, which is a Haskell program. It takes the UPLC source code as input and produces C code as output. This compiler output is then provided as input to \texttt{gcc}, along with the runtime system, here depicted as two files, \texttt{rts.c} (containing implementations of the runtime system subroutines) and \texttt{rts.h} (the corresponding header file). These three files are all the input \texttt{gcc} needs to produce executable object code for some architecture. Here we depict two compilation targets for \texttt{gcc}: x86 and vnTinyRAM. RTL is the register transfer language, which is the representation of input to \texttt{gcc} backends. \cite{rtl} \texttt{gcc} may be substituted by any suitable C compiler, adjusting the rest of the picture as appropriate.
@@ -32,23 +33,25 @@ The system architecture and data flow is depicted in Figure~\ref{fig:system}. Th
 
 The files \texttt{rts.c} and \texttt{rts.h} are the source code of the UPLC2C runtime system. They are the same for all source programs. They are included in the C compiler input in order to provide basic algorithms and data structures needed for the execution of the programs output by \texttt{uplc2c}. In case not all of the subroutines defined in \texttt{rts.c} are needed by a particular program, \texttt{gcc}'s dead code elimination will not include them in the compiled object code, saving valuable RAM in the context of vnTinyRAM implemented as an arithmetic circuit to produce a zkSNARK.
 
-In the interest of minimizing the complexity of the RTS, this architecture recommends defaulting to a never-free memory management model, where memory once allocated is never freed. This eliminates the need for a garbage collector or a memory management algorithm. Memory management in a never-free model consists of one operation, allocating free memory, which consists of incrementing the pointer to the next available memory and failing (diverging) if the end of the statically allocated heap is reached. This never-free memory management model, where memory usage grows roughly linearly with program runtime, is estimated to be sufficient for the source programs of interest, which are expected to halt in a relatively short number of steps or diverge. A later version of this compiler may feature an optional garbage collector usable via a compile time flag. By not including memory management by default, we save on the size of the RTS, allowing for smaller object code. For very short-running programs, this may reduce the total space requirements, and thus circuit size, and thus proof generation complexity. For longer-running programs, some sort of garbage collection is going to be a requirement.
+In the interest of minimizing the complexity of the RTS, this proposal recommends defaulting to a never-free memory management model, where memory once allocated is never freed. This eliminates the need for a garbage collector or a memory management algorithm. Memory management in a never-free model consists of one operation, allocating free memory, which consists of incrementing the pointer to the next available memory and failing (diverging) if the end of the statically allocated heap is reached. This never-free memory management model, where memory usage grows roughly linearly with program runtime, is estimated to be sufficient for the source programs of interest, which are expected to halt in a relatively short number of steps or diverge. A later version of this compiler may feature an optional garbage collector usable via a compile time flag. By not including memory management by default, we save on the size of the RTS, allowing for smaller object code. For very short-running programs, this may reduce the total space requirements, and thus circuit size, and thus proof generation complexity. For longer-running programs, some sort of garbage collection is going to be a requirement.
 
 The RTS implements builtin UPLC functions, which include unlimited size integer arithmetic, basic operations on text and bytestrings, basic operations on polymorphic data, and some cryptographic functions.
 
-Data in a compiled UPLC program is represented as `struct NFData *`, which represents a term in $\beta$-normal form. NFData can be an integer, a boolean, a unit, a text, a bytestring, a closure, or a thunk. Of these, a closure and a thunk represent code together with associated state data. A thunk represents a delayed computation, which carries with it its lexical scope. A closure represents a lambda as the result of a computation, which carries with it its lexical scope. A lexical scope maps de Bruijn indices to NFData values.
+Data in a compiled UPLC program is represented as \texttt{struct NFData *}, which represents a term in $\beta$-normal form. NFData can be an integer, a boolean, a unit, a text, a bytestring, a closure, or a thunk. Of these, a closure and a thunk represent code together with associated state data. A thunk represents a delayed computation, which carries with it its lexical scope. A closure represents a lambda as the result of a computation, which carries with it its lexical scope. A lexical scope maps de Bruijn indices to NFData values.
 
 A lexical scope may be represented as a linked list, with the innermost definition first. This representation is convenient to use for non-destructive updates, a frequent operation on lexical scopes.
 
 \section{Compiler}
 
-Here is a simple strategy for compiling UPLC. Each subterm of a UPLC expression gets turned into a C function. That C function takes as input a lexical scope (a pointer to a map of de Bruijn indices to NFData values) and an argument (a pointer to an NFData value). It produces as output a pointer to an NFData value.
+Here is a simple strategy for compiling UPLC. Each subterm of a UPLC term gets turned into a C function. That C function takes as input a lexical scope (a pointer to a map of de Bruijn indices to NFData values) and an argument (a pointer to an NFData value). It produces as output a pointer to an NFData value.
 
 UPLC has the following types of terms: variable references (denoted by de Bruijn indices), references to builtins, lambdas, function applications, delay and force, constants, and \texttt{Error} (which denotes a diverging program). Let us consider how each type of term would be compiled into a C function from a lexical scope pointer and an NFData pointer to an NFData pointer.
 
 A variable reference becomes a lookup in the provided lexical scope.
 
 A reference to a builtin becomes a reference to a function (more precisely, a statically allocated closure with a null scope pointer) defined in the RTS.
+
+A lambda expression becomes two C functions, an outer function which builds and returns a closure with the provided lexical scope, and an inner function which the resulting closure points to.
 
 A function application becomes a three-step process of calling the operand, calling the operator (resulting in a closure), and calling the closure with the operand result as argument.
 
@@ -60,7 +63,7 @@ A constant expression becomes a function which constructs and returns the consta
 
 An \texttt{Error} expression becomes an infinite loop.
 
-In summary, this compilation strategy involves flattening a UPLC AST into a C program where each subterm is named by a top-level function, and these functions call each other in order to produce a term in $\beta$-normal form, which is the result of executing the program. Each of these functions has very little work to do in itself, and \texttt{gcc} function inlining should be able to help with reducing unnecessary function call overhead.
+In summary, this compilation strategy involves flattening a UPLC term into a C program where each subterm is named by a top-level function, and these functions call each other in order to produce a term in $\beta$-normal form, which is the result of executing the program. Each of these functions has very little work to do in itself, and \texttt{gcc} function inlining should be able to help with reducing unnecessary function call overhead.
 
 \begin{thebibliography}{6}
 
