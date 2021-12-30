@@ -155,10 +155,11 @@ enum NFDataType {
   // , Data // TODO
 };
 
-// The third argument is a pointer to where to put the output. Is actually an
-// (NFData *) but that would make for cyclic definitions. Similarly, the second
-// argument is an (NFData *) but is represented as (void *) to avoid a cycle.
-typedef void (*Function) (void *context, void *input, void *output);
+
+// The context is a LexicalScope and the output points
+// to an NFData, but these are not in the type to avoid
+// cyclic definitions.
+typedef void *(*Function) (void *context);
 
 // A function is represented by a closure, which is a function pointer together with
 // some data on the heap which it depends on. At this level of abstraction we
@@ -168,9 +169,7 @@ struct Closure {
   void *data; // may be null if the function does not dereference the pointer
 };
 
-// The second argument is a point to where to put the output. Is actually an
-// (NFData *) but that would make for cyclic definitions.
-typedef void (*Computation) (void *context, void *output);
+typedef void (*Computation) (void *context);
 
 // A thunk is effectively a closure over a function with no arguments.
 struct Thunk {

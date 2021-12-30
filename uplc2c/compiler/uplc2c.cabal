@@ -28,6 +28,7 @@ library
     ghc-prim,
     hedgehog -any,
     lens,
+    raw-strings-qq,
     text -any,
     mtl
 
