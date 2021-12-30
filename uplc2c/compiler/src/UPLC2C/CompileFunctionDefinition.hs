@@ -54,7 +54,7 @@ compileCreateClosure (CName name) (CName ref) =
 createClosureTemplate :: String
 createClosureTemplate =
   [r|
-NFData *%s (struct LexicalScope *scope) {
+struct NFData *%s (struct LexicalScope *scope) {
   struct NFData *result = (struct NFData *)alloc(sizeof(struct NFData));
   result->type = FunctionType;
   result->value.fn.apply = &%s;
@@ -72,7 +72,7 @@ compileApply (CName name) (CName operator) (CName operand) =
 applyTemplate :: String
 applyTemplate =
   [r|
-NFData *%s (struct LexicalScope *scope) {
+struct NFData *%s (struct LexicalScope *scope) {
   struct NFData *operatorResult = %s(scope);
   struct NFData *operandResult = %s(scope);
   if (operatorResult->type == FunctionType) {
@@ -95,7 +95,7 @@ compileDelay (CName name) (CName operand) =
 delayTemplate :: String
 delayTemplate =
   [r|
-NFData *%s (struct LexicalScope *scope) {
+struct NFData *%s (struct LexicalScope *scope) {
   struct NFData *result = (struct NFData *)alloc(sizeof(struct NFData));
   result->type = ThunkType;
   result->value.thunk.run = %s;
@@ -113,7 +113,7 @@ compileForce (CName name) (CName operand) =
 forceTemplate :: String
 forceTemplate =
   [r|
-NFData *%s (struct LexicalScope *scope) {
+struct NFData *%s (struct LexicalScope *scope) {
   struct NFData *operandResult = %s(scope);
   if (operandResult->type == ThunkType) {
     Thunk thunk = operandResult->value.thunk;
