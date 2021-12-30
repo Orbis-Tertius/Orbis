@@ -9,7 +9,9 @@ maintainer:    morgan.thomas@platonic.systems
 
 library
   exposed-modules:
+    UPLC2C.CompileFunctionDefinition
     UPLC2C.Prelude
+    UPLC2C.Types.CCode
     UPLC2C.Types.CName
     UPLC2C.Types.CFunctionDefinition
     UPLC2C.Types.CProgram
