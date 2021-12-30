@@ -36,9 +36,31 @@ In the interest of minimizing the complexity of the RTS, this architecture recom
 
 The RTS implements builtin UPLC functions, which include unlimited size integer arithmetic, basic operations on text and bytestrings, basic operations on polymorphic data, and some cryptographic functions.
 
+Data in a compiled UPLC program is represented as `struct NFData *`, which represents a term in $\beta$-normal form. NFData can be an integer, a boolean, a unit, a text, a bytestring, a closure, or a thunk. Of these, a closure and a thunk represent code together with associated state data. A thunk represents a delayed computation, which carries with it its lexical scope. A closure represents a lambda as the result of a computation, which carries with it its lexical scope. A lexical scope maps de Bruijn indices to NFData values.
+
+A lexical scope may be represented as a linked list, with the innermost definition first. This representation is convenient to use for non-destructive updates, a frequent operation on lexical scopes.
+
 \section{Compiler}
 
-TODO: compiler architecture
+Here is a simple strategy for compiling UPLC. Each subterm of a UPLC expression gets turned into a C function. That C function takes as input a lexical scope (a pointer to a map of de Bruijn indices to NFData values) and an argument (a pointer to an NFData value). It produces as output a pointer to an NFData value.
+
+UPLC has the following types of terms: variable references (denoted by de Bruijn indices), references to builtins, lambdas, function applications, delay and force, constants, and \texttt{Error} (which denotes a diverging program). Let us consider how each type of term would be compiled into a C function from a lexical scope pointer and an NFData pointer to an NFData pointer.
+
+A variable reference becomes a lookup in the provided lexical scope.
+
+A reference to a builtin becomes a reference to a function (more precisely, a statically allocated closure with a null scope pointer) defined in the RTS.
+
+A function application becomes a three-step process of calling the operand, calling the operator (resulting in a closure), and calling the closure with the operand result as argument.
+
+A delay expression becomes a function which constructs and returns a thunk out of the provided lexical scope.
+
+A force expression becomes a function which calls its operand, resulting in a thunk, which then runs the thunk and returns its result.
+
+A constant expression becomes a function which constructs and returns the constant.
+
+An \texttt{Error} expression becomes an infinite loop.
+
+In summary, this compilation strategy involves flattening a UPLC AST into a C program where each subterm is named by a top-level function, and these functions call each other in order to produce a term in $\beta$-normal form, which is the result of executing the program. Each of these functions has very little work to do in itself, and \texttt{gcc} function inlining should be able to help with reducing unnecessary function call overhead.
 
 \begin{thebibliography}{6}
 
