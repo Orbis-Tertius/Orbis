@@ -9,7 +9,8 @@ maintainer:    morgan.thomas@platonic.systems
 
 library
   exposed-modules:
-    UPLC2C.Types
+    UPLC2C.Prelude
+    UPLC2C.Types.CName
 
   build-depends:
     base >= 4.9 && < 5,
