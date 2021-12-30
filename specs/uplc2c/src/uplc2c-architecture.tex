@@ -21,16 +21,24 @@ UPLC2C aims to produce small vnTinyRAM object code which executes efficiently on
 
 UPLC2C aims to be rigorously verified by property tests and practical use, and eventually formal verification. Verification should include checking that compilation is a semantics preserving process. For our purposes, we are interested in one thing: does the compiled program have the same semantics as the input program? The UPLC programs we are interested in compiling are on-chain scripts, which produce no output, indicating only success (acceptance) or failure (rejection). Success is indicated by termination; failure is indicated by non-termination. Thus the key semantics-preservation property we are interested in is, for any given UPLC program and any given input to the program, does the UPLC program interpreted by the canonical interpreter halt (i.e. accept) on all and only the same inputs as the compiled version running on the vnTinyRAM circuit? We are also interested in checking the same property with respect to the x86 object code generated from the C code output of \texttt{uplc2c}.
 
+\begin{figure}
+	\includegraphics[width=1.0\columnwidth]{system-and-process-diagram.pdf}
+	\caption{The UPLC2C system architecture and data flow.}
+\end{figure}
+
 The system architecture and data flow is depicted in Figure~\ref{fig:system}. The UPLC source code is in another sense object code, being output of another compiler, but in this context, it is considered as source code. \texttt{uplc2c} is the UPLC to C compiler, which is a Haskell program. It takes the UPLC source code as input and produces C code as output. This compiler output is then provided as input to \texttt{gcc}, along with the runtime system, here depicted as two files, \texttt{rts.c} (containing implementations of the runtime system subroutines) and \texttt{rts.h} (the corresponding header file). These three files are all the input \texttt{gcc} needs to produce executable object code for some architecture. Here we depict two compilation targets for \texttt{gcc}: x86 and vnTinyRAM. RTL is the register transfer language, which is the representation of input to \texttt{gcc} backends. \cite{rtl} \texttt{gcc} may be substituted by any suitable C compiler, adjusting the rest of the picture as appropriate.
+
+\section{Runtime System}
 
 The files \texttt{rts.c} and \texttt{rts.h} are the source code of the UPLC2C runtime system. They are the same for all source programs. They are included in the C compiler input in order to provide basic algorithms and data structures needed for the execution of the programs output by \texttt{uplc2c}. In case not all of the subroutines defined in \texttt{rts.c} are needed by a particular program, \texttt{gcc}'s dead code elimination will not include them in the compiled object code, saving valuable RAM in the context of vnTinyRAM implemented as an arithmetic circuit to produce a zkSNARK.
 
 In the interest of minimizing the complexity of the RTS, this architecture recommends defaulting to a never-free memory management model, where memory once allocated is never freed. This eliminates the need for a garbage collector or a memory management algorithm. Memory management in a never-free model consists of one operation, allocating free memory, which consists of incrementing the pointer to the next available memory and failing (diverging) if the end of the statically allocated heap is reached. This never-free memory management model, where memory usage grows roughly linearly with program runtime, is estimated to be sufficient for the source programs of interest, which are expected to halt in a relatively short number of steps or diverge. A later version of this compiler may feature an optional garbage collector usable via a compile time flag. By not including memory management by default, we save on the size of the RTS, allowing for smaller object code. For very short-running programs, this may reduce the total space requirements, and thus circuit size, and thus proof generation complexity. For longer-running programs, some sort of garbage collection is going to be a requirement.
 
-\begin{figure}
-	\includegraphics[width=1.0\columnwidth]{system-and-process-diagram.pdf}
-	\caption{The UPLC2C system architecture and data flow.}
-\end{figure}
+The RTS implements builtin UPLC functions, which include unlimited size integer arithmetic, basic operations on text and bytestrings, basic operations on polymorphic data, and some cryptographic functions.
+
+\section{Compiler}
+
+TODO: compiler architecture
 
 \begin{thebibliography}{6}
 
