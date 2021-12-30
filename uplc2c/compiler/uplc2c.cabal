@@ -11,11 +11,14 @@ library
   exposed-modules:
     UPLC2C.CompileFunctionDefinition
     UPLC2C.Prelude
+    UPLC2C.TermToCProgram
     UPLC2C.Types.CCode
     UPLC2C.Types.CName
     UPLC2C.Types.CFunctionDefinition
     UPLC2C.Types.CProgram
+    UPLC2C.Types.CProgramBuilder
     UPLC2C.Types.DeBruijnIndex
+    UPLC2C.Types.UPLCTerm
 
   build-depends:
     base >= 4.9 && < 5,
@@ -28,6 +31,7 @@ library
     ghc-prim,
     hedgehog -any,
     lens,
+    plutus-core,
     raw-strings-qq,
     text -any,
     mtl
