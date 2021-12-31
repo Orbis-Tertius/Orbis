@@ -26,7 +26,7 @@ compile term = do
     entryPointName <- termToCProgram term
     program <- getProgram
     return (program, entryPointName)
-  let code = programCode program <> CCode (pack (printf "\n\n\n\nvoid main() { %s(0); }\n" (unCName entryPointName)))
+  let code = CCode "#include \"rts.h\"\n\n" <> programCode program <> CCode (pack (printf "\n\n\n\nvoid main() { %s(0); }\n" (unCName entryPointName)))
   return code
 
 
