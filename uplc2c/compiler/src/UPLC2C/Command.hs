@@ -1,7 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
 
-module UPLC2C.Command ( compileFile ) where
+module UPLC2C.Command ( main ) where
 
 
 import Codec.Serialise (deserialiseOrFail)
@@ -15,6 +15,25 @@ import UPLC2C.Prelude
 import UPLC2C.Types.CCode (CCode (..))
 import UPLC2C.Types.InputFilePath (InputFilePath (..))
 import UPLC2C.Types.OutputFilePath (OutputFilePath (..))
+
+
+data Command = CompileFile InputFilePath OutputFilePath
+
+
+main :: MonadIO m => m ()
+main = runCommand =<< parseCommand
+
+
+parseCommand :: MonadIO m => m Command
+parseCommand = liftIO todo
+
+
+todo :: a
+todo = todo
+
+
+runCommand :: MonadIO m => Command -> m ()
+runCommand (CompileFile inPath outPath) = compileFile inPath outPath
 
 
 compileFile :: MonadIO m => InputFilePath -> OutputFilePath -> m ()
