@@ -1,5 +1,7 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
+
 module Main (main) where
 
 
-main :: IO ()
-main = putStrLn "hello world"
+import UPLC2C.Command (main)
