@@ -37,7 +37,7 @@ compileVariableReference (CName fnName) (DeBruijnIndex i) =
 variableReferenceTemplate :: String
 variableReferenceTemplate =
   [r|
-NFData *%s (struct LexicalScope *scope) {
+struct NFData *%s (struct LexicalScope *scope) {
   for (WORD i = 1; i < %i; i++) {
     scope = scope->rest;
   }
