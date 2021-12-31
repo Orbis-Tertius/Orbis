@@ -9,6 +9,7 @@ maintainer:    morgan.thomas@platonic.systems
 
 library
   exposed-modules:
+    UPLC2C.Command
     UPLC2C.Compile
     UPLC2C.CompileFunctionDefinition
     UPLC2C.Prelude
@@ -20,6 +21,8 @@ library
     UPLC2C.Types.CProgramBuilder
     UPLC2C.Types.CProgramBuilderT
     UPLC2C.Types.DeBruijnIndex
+    UPLC2C.Types.InputFilePath
+    UPLC2C.Types.OutputFilePath
     UPLC2C.Types.UPLCTerm
 
   build-depends:
@@ -35,6 +38,7 @@ library
     lens,
     plutus-core,
     raw-strings-qq,
+    serialise,
     string-random,
     text -any,
     transformers,
