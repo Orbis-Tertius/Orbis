@@ -186,10 +186,10 @@ union NFDataValue {
   struct ByteString byteString;
 };
 
-struct {
+struct NFData {
   enum NFDataType type;
   union NFDataValue value;
-} NFData;
+};
 
 
 /*****************************************************************************
