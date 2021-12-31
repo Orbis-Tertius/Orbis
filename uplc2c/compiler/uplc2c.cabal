@@ -36,6 +36,7 @@ library
     ghc-prim,
     hedgehog -any,
     lens,
+    optparse-applicative,
     plutus-core,
     plutus-ledger-api,
     raw-strings-qq,
