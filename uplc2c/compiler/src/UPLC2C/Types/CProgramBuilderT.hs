@@ -9,7 +9,6 @@ module UPLC2C.Types.CProgramBuilderT ( CProgramBuilderT (..), run ) where
 
 import qualified Data.Map as Map
 import qualified Data.Set as Set
-import Control.Monad.IO.Class (MonadIO (liftIO))
 import Control.Monad.Trans.State (StateT (..), get, put, evalStateT)
 import Text.StringRandom (stringRandomIO)
 

@@ -3,6 +3,7 @@
 
 module UPLC2C.Prelude
   ( module Prelude
+  , module Control.Monad.IO.Class
   , module Data.Map
   , module Data.Set
   , module Data.Text
@@ -10,6 +11,7 @@ module UPLC2C.Prelude
 
 
 import Prelude
+import Control.Monad.IO.Class (MonadIO (liftIO))
 import Data.Map (Map)
 import Data.Set (Set)
 import Data.Text (Text)

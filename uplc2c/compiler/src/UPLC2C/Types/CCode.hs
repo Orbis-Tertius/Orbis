@@ -1,3 +1,4 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
 
@@ -8,4 +9,4 @@ import UPLC2C.Prelude
 
 
 newtype CCode = CCode { unCCode :: Text }
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Semigroup, Monoid)
