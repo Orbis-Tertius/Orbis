@@ -37,6 +37,7 @@ library
     hedgehog -any,
     lens,
     plutus-core,
+    plutus-ledger-api,
     raw-strings-qq,
     serialise,
     string-random,

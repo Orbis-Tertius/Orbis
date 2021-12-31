@@ -10,7 +10,7 @@ module UPLC2C.Prelude
   ) where
 
 
-import Prelude
+import Prelude hiding (readFile, writeFile)
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import Data.Map (Map)
 import Data.Set (Set)
