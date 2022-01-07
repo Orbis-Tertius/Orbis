@@ -5,7 +5,7 @@ The Orbis Project is an effort, led by [Ardana](https://ardana.org/), to create 
 The Orbis Project is in design and early implementation phases. In this repo you can see the work in progress. Here is a breakdown of what is here:
 
  * `architecture`: the TeX source code (and Nix build code) for the current system architecture proposal.
- * `specs/on-chain-tx-pricing`: the TeX source code (and Nix build code) for the current on-chain transaction pricing model.
+ * `specs/on-chain-tx-pricing`: the TeX source code (and Nix build code) for the current on-chain transaction pricing model proposal.
  * `specs/uplc2c`: the design document for UPLC2C, a WIP Untyped Plutus Core to C compiler.
  * `uplc2c`: the code for UPLC2C compiler and runtime system.
  * `hs2halo2`: some rudiments for a way of expressing Halo 2 circuits in Haskell.
