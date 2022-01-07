@@ -12,7 +12,7 @@ in
       mkdir -p $out
       HOME=./. pdflatex architecture.tex
       HOME=./. pdflatex architecture.tex
-      cp architecture.pdf "$out/Ardana Rollups System Architecture.pdf"
+      cp architecture.pdf "$out/The Orbis Project System Architecture.pdf"
     '';
     installPhase = ''
       echo done
