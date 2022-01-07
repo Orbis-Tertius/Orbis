@@ -6,7 +6,7 @@
 \usepackage{lmodern}
 \usepackage{hyperref}
 
-\title{Ardana Rollups System Architecture}
+\title{Orbis System Architecture}
 \author{Ardana Labs}
 
 
@@ -16,17 +16,17 @@
 \maketitle
 
 
-Ardana Rollups are a general purpose ZK rollup layer 2 scalability solution for Cardano. ZK rollups are a mechanism by which transactions are processed off-chain and the results of those transactions are published onto the blockchain using zero knowledge proofs. More precisely, ZK rollups use zkSNARKS, which are in other words zero knowledge succinct non-interactive arguments of knowledge.
+Orbis is a general purpose ZK rollup layer 2 scalability solution for Cardano. ZK rollups are a mechanism by which transactions are processed off-chain and the results of those transactions are published onto the blockchain using zero knowledge proofs. More precisely, ZK rollups use zkSNARKS, which are in other words zero knowledge succinct non-interactive arguments of knowledge.
 
-By moving data and processing off-chain, ZK rollups allow for higher throughput. By using a secure, decentralized layer 1 blockchain and zkSNARKS, ZK rollups inherit certain security properties of the layer 1 solution, namely that we need not assume that any party is trustworthy, and nobody is able to cause unlawful (protocol-violating) results to be produced on-chain. Additionally, Ardana Rollups are designed to have the security property that there is no single point of failure, meaning that there is no individual or organization whose ongoing participation is required for the proper, intended functioning of the solution.
+By moving data and processing off-chain, ZK rollups allow for higher throughput. By using a secure, decentralized layer 1 blockchain and zkSNARKS, ZK rollups inherit certain security properties of the layer 1 solution, namely that we need not assume that any party is trustworthy, and nobody is able to cause unlawful (protocol-violating) results to be produced on-chain. Additionally, Orbis is designed to have the security property that there is no single point of failure, meaning that there is no individual or organization whose ongoing participation is required for the proper, intended functioning of the solution.
 
 ZK rollups are an increasingly popular choice of layer 2 solution on Ethereum, with multiple choices of ZK rollup solution available for use, including zkSync, StarkEx, and Loopring. \cite{ethworks-20} In contrast, Ardana knows of no prior art for a ZK rollup based layer 2 solution on Cardano. However, we believe that ZK rollups will be an important part of the Cardano ecosystem moving forward, just as they are in Ethereum today.
 
-This is the system architecture document for Ardana Rollups. This defines the key components of Ardana Rollups and their interactions with each other and the outside world, as well as the rationale for those design decisions. This is different from a whitepaper or a technical spec in that it does not attempt to provide enough information to implement Ardana Rollups. Instead, you can think of it as a sketch. Technical specs will fill in the picture in much greater detail, sufficient to guide implementation, and a technical whitepaper will describe Ardana Rollups in a form more suitable for general consumption as compared to the specs.
+This is the system architecture document for Orbis. This defines the key components of Orbis and their interactions with each other and the outside world, as well as the rationale for those design decisions. This is different from a whitepaper or a technical spec in that it does not attempt to provide enough information to implement Orbis. Instead, you can think of it as a sketch. Technical specs will fill in the picture in much greater detail, sufficient to guide implementation, and a technical whitepaper will describe Orbis in a form more suitable for general consumption as compared to the specs.
 
 \section{Background}
 
-This section covers background information necessary to understand the design of Ardana Rollups and ZK rollup solutions more generally.
+This section covers background information necessary to understand the design of Orbis and ZK rollup solutions more generally.
 
 A blockchain uses a consensus algorithm executed by a decentralized network of nodes in order to process financial transactions and other information. Thanks to the consensus algorithm, parties can be assured that their money and other information assets stored on the blockchain will not be used in a manner they did not authorize, without a need to trust that any particular participant in the protocol is behaving honestly.
 
@@ -65,7 +65,7 @@ We can extend this idea to the concept of an ordered set, where the elements are
 
 \section{System Components}
 
-Ardana Rollups has two main components: the prover and the verifier. See Figure~\ref{fig:system-diagram} for a picture of these components and their contact points with each other and the rest of the world.
+Orbis has two main components: the prover and the verifier. See Figure~\ref{fig:system-diagram} for a picture of these components and their contact points with each other and the rest of the world.
 
 The prover is an off-chain web service, and its essential purpose is to construct zkSNARKs verifying the occurrence of transactions. The prover has an API similar to a blockchain node; it allows for posting transactions and inspecting state data. Unlike a blockchain node, which allows for posting transactions to the blockchain and inspecting the state of the blockchain, the prover allows for posting transactions to a rollup and inspecting the state of a rollup. Here ``rollup'' refers to a sequence of transactions and a collection of state data which will at some future time be used to create outputs on the blockchain. The rollup is stored in the persistent state mechanism of the prover (a database) rather than on the blockchain. Therefore, while the prover has an API similar to that of a blockchain node, it is something else entirely.
 
@@ -73,20 +73,20 @@ The verifier is an on-chain smart contract. Its essential purpose is to settle t
 
 \begin{figure}
 	\includegraphics[width=1.0\columnwidth]{system-diagram.pdf}
-	\caption{Key components of and related to Ardana Rollups.}
+	\caption{Key components of and related to Orbis.}
 	\label{fig:system-diagram}
 \end{figure}
 
-Ardana Rollups provide an off-chain context in which smart contract validator code can run. Instead of being run to create transactions on the chain, in this context validator code is run to create transactions on the rollup and proofs that those transactions belong on the rollup.
+Orbis provides an off-chain context in which smart contract validator code can run. Instead of being run to create transactions on the chain, in this context validator code is run to create transactions on the rollup and proofs that those transactions belong on the rollup.
 
 It is important to keep two terms distinct here: \emph{verifier}\/ and \emph{validator}. ``Validator'' refers to a function which takes as input a transaction and produces as output a boolean value indicating whether or not the transaction satisfies the rules of a smart contract. ``Verifier'' refers to the smart contract validator which validates transactions over the rollup smart contract. The verifier is a validator, but other validators are not verifiers. In order to avoid confusion, let the term ``validator'' refer to the validator for some smart contract running on the rollup, as opposed to referring to the verifier (which runs on the blockchain).
 
-Using Ardana Rollups complicates the process of developing a dapp (decentralized application) somewhat. The dapp must be aware of and control the movement of information from the chain to the rollup and back again. It must publish and subscribe to data not only on the chain but also on the rollup. The dapp interacts with the rollup by calling the prover API. The next section covers the processes involved in more detail.
+Using Orbis complicates the process of developing a dapp (decentralized application) somewhat. The dapp must be aware of and control the movement of information from the chain to the rollup and back again. It must publish and subscribe to data not only on the chain but also on the rollup. The dapp interacts with the rollup by calling the prover API. The next section covers the processes involved in more detail.
 
 
 \section{Processes}
 
-There are three main processes involved in a dapp using Ardana Rollups: moving inputs from the chain to the rollup, posting transactions on the rollup, and moving outputs from the rollup to the chain. These processes are pictured in Figures~\ref{fig:process-a}, \ref{fig:process-b}, and \ref{fig:process-c}.
+There are three main processes involved in a dapp using Orbis: moving inputs from the chain to the rollup, posting transactions on the rollup, and moving outputs from the rollup to the chain. These processes are pictured in Figures~\ref{fig:process-a}, \ref{fig:process-b}, and \ref{fig:process-c}.
 
 \begin{figure}
 	\includegraphics[angle=180,width=1.0\columnwidth]{process-diagram-a.pdf}
@@ -151,7 +151,7 @@ In the decentralized version of the prover, there are additional security consid
 
 One of the risks of ZK rollup solutions is denial of service. The prover is unable to post any outputs to the chain which are not lawful, but the prover is able to refuse service. Given that the prover is the only entity able to sign input and output transactions, if the prover stops operations, then the funds stored in the rollup contract would be lost. Another variant of this denial of service risk is that the prover might refuse service to certain market participants and not others, which could also cause those participants to lose money they put into the rollup contract. How can we mitigate these risks?
 
-Ardana Rollups uses a model of exclusive access of one prover to a given rollup contract UTXO. The reason for this is to avoid resource contention where multiple provers contend for one rollup UTXO, which could result in performance issues and also complex situations where inputs are double spent, once by one prover and once by another prover. The latter situation would not result in actual double-spends on-chain, but it would preclude the possibility of both provers merging the outputs of their on-rollup transactions into the chain.
+Orbis uses a model of exclusive access of one prover to a given rollup contract UTXO. The reason for this is to avoid resource contention where multiple provers contend for one rollup UTXO, which could result in performance issues and also complex situations where inputs are double spent, once by one prover and once by another prover. The latter situation would not result in actual double-spends on-chain, but it would preclude the possibility of both provers merging the outputs of their on-rollup transactions into the chain.
 
 This exclusive access model (in contract to a permissionless model for using rollup UTXOs) leads to the mentioned money trap risk that occurs when a prover stops operating. In order to mitigate this risk, we can put an expiration time on a prover's exclusive access to the rollup UTXO. This means that the prover is expected to generate input and output transactions at some specified minimum frequency, and if this obligation is unmet, then the prover loses their exclusive access to the rollup UTXO and another prover is able to claim that exclusive access and retain it as long as they keep up with the obligation to post input and output transactions.
 
