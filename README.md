@@ -12,3 +12,17 @@ introduce a new paradigm to blockchain scalability through a distributed prover
 node network utilizing recursive zk-SNARKs, which can scale with
 $O(\log(n+m))$ time complexity to prove the validity of a block of
 $n$ transactions containing $m$ smart contract invocations.
+
+# Resources
+# ------------
+
+Explainer slides: https://docsend.com/view/x3xzywf8pxnixh7c
+System architecture paper: https://docsend.com/view/es4pjfgb6nism5gd
+
+# Links
+# ------------
+
+Website: https://orbisprotocol.com/
+Discord: https://discord.gg/orbisprotocol
+Blog: https://blog.orbisprotocol.com/
+
