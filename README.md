@@ -23,6 +23,8 @@ System architecture paper: https://docsend.com/view/es4pjfgb6nism5gd
 
 Website: https://orbisprotocol.com/
 
+Twitter: https://twitter.com/orbisproject
+
 Discord: https://discord.gg/orbisprotocol
 
 Blog: https://blog.orbisprotocol.com/
