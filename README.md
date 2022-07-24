@@ -1,3 +1,14 @@
 # Orbis
 ![1080x360](https://user-images.githubusercontent.com/83559799/153224202-0965360e-2df2-41d9-8828-5b30d6f92699.jpg)
-Orbis is an effort led by Orbis Labs to create a ZK rollups layer 2 solution for Cardano. It aims to address scalability challenges on Cardano, particularly to support decentralized finance (DeFi) applications. In order to compete with the world of centralized finance, these applications must support massive transaction throughput, on the order of thousands of transactions per second. Orbis aims to deliver this level of transaction throughput, and ultimately any desired level of transaction throughput, for decentralized applications (dapps) built on Cardano. 
+We present ``Orbis,'' the first general-purpose layer 2 zero-knowledge (zk)
+rollup protocol for the Cardano blockchain. We outline the use of cryptography
+through the zero-knowledge proof encryption scheme to prove a set of transactions
+computed off-chain and verified on-chain, and describe the prover node and verifier contract
+architecture that leverages this scheme to enable a permissionless system with strong
+security guarantees that is isomorphic to the underlying Cardano mainchain.
+We also outline the advanced security properties of decentralized application development on Orbis at scale, enabled by its functional programming model,
+which aids in writing bug-free smart contracts. Orbis will
+introduce a new paradigm to blockchain scalability through a distributed prover
+node network utilizing recursive zk-SNARKs, which can scale with
+$O(\log(n+m))$ time complexity to prove the validity of a block of
+$n$ transactions containing $m$ smart contract invocations.
