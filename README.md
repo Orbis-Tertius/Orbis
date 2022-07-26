@@ -19,6 +19,8 @@ Explainer slides: https://docsend.com/view/x3xzywf8pxnixh7c
 
 System architecture paper: https://docsend.com/view/es4pjfgb6nism5gd
 
+Developer diaries: https://devdiaries.orbisprotocol.com
+
 # Links
 
 Website: https://orbisprotocol.com/
