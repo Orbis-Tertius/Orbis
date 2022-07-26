@@ -1,5 +1,5 @@
 # Orbis
-![1080x360](https://user-images.githubusercontent.com/83559799/153224202-0965360e-2df2-41d9-8828-5b30d6f92699.jpg)
+![1080x360](https://user-images.githubusercontent.com/83559799/181117961-3a169e27-24ac-4bc7-8a23-1cc36611e1e5.png)
 Orbis the first general-purpose layer 2 zero-knowledge (zk)
 rollup protocol for the Cardano blockchain. With the use of cryptography
 through the zero-knowledge proof encryption scheme, it proves a set of transactions
