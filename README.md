@@ -21,6 +21,12 @@ System architecture paper: https://docsend.com/view/es4pjfgb6nism5gd
 
 Developer diaries: https://devdiaries.orbisprotocol.com
 
+# Published Papers
+
+Arithmetization of Σ¹₁ Relations in Halo 2: https://eprint.iacr.org/2022/777
+
+Orbis Specification Language: a type theory for zk-SNARK programming: https://eprint.iacr.org/2022/1003
+
 # Links
 
 Website: https://orbisprotocol.com/
