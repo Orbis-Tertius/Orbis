@@ -17,7 +17,7 @@ $n$ transactions containing $m$ smart contract invocations.
 
 Explainer slides: https://docsend.com/view/x3xzywf8pxnixh7c
 
-System architecture paper: https://docsend.com/view/es4pjfgb6nism5gd
+Whitepaper: https://papers.orbisprotocol.com/whitepaper.pdf
 
 Developer diaries: https://devdiaries.orbisprotocol.com
 
